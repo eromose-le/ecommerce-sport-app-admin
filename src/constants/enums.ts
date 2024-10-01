@@ -1,0 +1,32 @@
+export enum AGENT_APPROVAL_STATUS {
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+}
+
+export enum EMPLOYEE_APPROVAL_STATUS {
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+}
+
+export enum CLIENT_APPROVAL_STATUS {
+  NONE = "all",
+}
+
+export enum EMPLOYEE_APPROVAL_STATUS {
+  NONE = "all",
+}
+
+export enum TABLE_ROW_TYPE {
+  APPROVAL_STATUS = "APPROVAL_STATUS",
+  AGENT_NAME = "AGENT_NAME",
+  STATUS = "STATUS",
+  TEAMS = "TEAMS",
+  ROLE = "ROLE",
+  EMPLOYEE_ID = "EMPLOYEE_ID",
+  NAME = "NAME",
+  APARTMENT_LIST = "APARTMENT_LIST",
+  TITLE_OF_PROPERTY = "TITLE_OF_PROPERTY",
+  SUSPENDED = "SUSPENDED",
+}

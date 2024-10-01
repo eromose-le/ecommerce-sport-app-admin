@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  scroll-behavior: smooth;
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+  background: var(--background) !important;
+}
+
+@layer base {
+  :root {
+    --white: #fff;
+    --black: #000;
+    --radius: 0.5rem;
+    --background: #fff;
+    --green: #027a48;
+  }
+}
+
+/* Mui Styling */
+/* Override MUI Button globally to match Tailwind styles */
+/* .MuiButton-root {
+  @apply bg-blue-500 text-white;
+} */
+
+.MuiTextFieldOutlined--plain .MuiInputBase-root > fieldset {
+  border: currentColor;
+  padding: 0px;
+}
+
+.MuiTextFieldOutlined--plain .MuiInputBase-root {
+  background-color: inherit;
+  padding: 0px;
+}
+
+/* Table styling */
+.action-column {
+  width: 80px !important; /* Set fixed width for the action column */
+  background-color: #ffffff;
+}
+
+.table-fixed {
+  table-layout: fixed;
+}
+
+/* Loading styling */
+#loading-indicator {
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: loading-indicator-animation 1s linear infinite;
+}
+
+@keyframes loading-indicator-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* App-bar Styling */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a6f4c5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a6f4c5;
+}
+
+/* Max width styling */
+.wrapper {
+  @apply px-[30px];
+}
+.container-wrapper {
+  @apply wrapper [@media(max-width:1140px)]:max-w-[1140px];
+}
