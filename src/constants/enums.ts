@@ -1,7 +1,5 @@
-export enum AGENT_APPROVAL_STATUS {
-  PENDING = "pending",
-  APPROVED = "approved",
-  REJECTED = "rejected",
+export enum PRODUCT_STATUS {
+  NONE = "all",
 }
 
 export enum EMPLOYEE_APPROVAL_STATUS {
@@ -19,6 +17,11 @@ export enum EMPLOYEE_APPROVAL_STATUS {
 }
 
 export enum TABLE_ROW_TYPE {
+  PRODUCT_NAME = "PRODUCT_NAME",
+  PRICE = "PRICE",
+  STOCK = "STOCK",
+  CATEGORY = "CATEGORY",
+  SUB_CATEGORY = "SUB_CATEGORY",
   APPROVAL_STATUS = "APPROVAL_STATUS",
   AGENT_NAME = "AGENT_NAME",
   STATUS = "STATUS",
@@ -27,6 +30,11 @@ export enum TABLE_ROW_TYPE {
   EMPLOYEE_ID = "EMPLOYEE_ID",
   NAME = "NAME",
   APARTMENT_LIST = "APARTMENT_LIST",
-  TITLE_OF_PROPERTY = "TITLE_OF_PROPERTY",
   SUSPENDED = "SUSPENDED",
+}
+
+export enum UPLOAD_FORMATS {
+  IMAGE = "imageUploader",
+  PDF = "pdfUploader",
+  VIDEO = "videoUploader",
 }

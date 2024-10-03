@@ -13,12 +13,16 @@ import { routeEnum } from "@/constants/RouteConstants";
 const Home = lazy(() => import("@/pages/Home/Home"));
 
 const Product = lazy(() => import("@/pages/Product/Product"));
+const ProductCreate = lazy(() => import("@/pages/Product/ProductCreate"));
+const ProductDetail = lazy(() => import("@/pages/Product/ProductDetail"));
 
 const Client = lazy(() => import("@/pages/Client/Client"));
 const ClientProfile = lazy(() => import("@/pages/ClientProfile/ClientProfile"));
 
 const Employee = lazy(() => import("@/pages/Employee/Employee"));
-const EmployeeProfile = lazy(() => import("@/pages/EmployeeProfile/EmployeeProfile"));
+const EmployeeProfile = lazy(
+  () => import("@/pages/EmployeeProfile/EmployeeProfile")
+);
 
 const AuthLogin = lazy(() => import("@/pages/Auth/AuthLogin"));
 
@@ -67,6 +71,16 @@ export const ProtectedRoutes: ExtendedRouteObject[] = [
       {
         path: routeEnum.PRODUCTS,
         element: <Product />,
+        errorElement: <ErrorBoundaryRoot />,
+      },
+      {
+        path: routeEnum.PRODUCTS_CREATE,
+        element: <ProductCreate />,
+        errorElement: <ErrorBoundaryRoot />,
+      },
+      {
+        path: routeEnum.PRODUCT_DETAILS,
+        element: <ProductDetail />,
         errorElement: <ErrorBoundaryRoot />,
       },
       {
