@@ -7,7 +7,7 @@ import {
   extractVideoAppUrlsAndFileType,
   FileObject,
 } from "@/utils/fileUtils";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 
 const BACKEND_BASE_URL = import.meta.env.VITE_PUBLIC_API_URL;
 
@@ -106,14 +106,16 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
   return (
     <>
       <form onSubmit={handleSubmit} className="w-full mt-4 max-w-lg mx-auto">
-        <label
-          htmlFor="video-file-upload"
-          className="block text-sm font-medium text-gray-700 mb-2"
+        <Typography
+          color="grey.500"
+          component="label"
+          className="font-medium text-sm font-inter capitalize"
+          htmlFor="productVideo"
         >
-          Upload Video Files
-        </label>
+          Upload Short Video
+        </Typography>
 
-        <div className="flex flex-col md:flex-row gap-2 items-center justify-center">
+        <div className="flex flex-col md:flex-row gap-2 items-start justify-start">
           {/* Dropzone area */}
           <div
             className="flex flex-col justify-center items-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 focus:outline-none cursor-pointer"

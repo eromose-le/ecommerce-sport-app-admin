@@ -150,3 +150,14 @@ export function normalizeArray(
 export function objectToArray(obj: object | null | undefined): any[] {
   return obj ? Object.entries(obj) : [];
 }
+
+interface keyValueItem {
+  key: string;
+  value: string;
+}
+
+export const formatKeyValuePair = (arrayOfKeyValue: keyValueItem[]) => {
+  return arrayOfKeyValue?.map((keyValue) => ({
+    [keyValue?.key]: keyValue?.value,
+  }));
+};
