@@ -5,21 +5,21 @@ interface IGetDynamicEnv {
   PROPERTY_URL_API: string;
   CHAT_URL_API: string;
   CHAT_URL_SOCKET: string;
-  // PAYSTACK_PUBLIC_KEY: string;
+  PAYSTACK_PUBLIC_KEY: string;
 }
 interface IDefaultUrls {
   AUTH_URL_API: string;
   PROPERTY_URL_API: string;
   CHAT_URL_API: string;
   CHAT_URL_SOCKET: string;
-  // PAYSTACK_PUBLIC_KEY: string;
+  PAYSTACK_PUBLIC_KEY: string;
 }
 interface IProductionUrls {
   PROD_AUTH_URL_API: string;
   PROD_PROPERTY_URL_API: string;
   PROD_CHAT_URL_API: string;
   PROD_CHAT_URL_SOCKET: string;
-  // PROD_PAYSTACK_PUBLIC_KEY: string;
+  PROD_PAYSTACK_PUBLIC_KEY: string;
 }
 interface IAppUrls {
   AES_REQ_RES_KEY: string;
@@ -38,13 +38,13 @@ interface IEnvConfig {
   PROPERTY_URL_API: string;
   CHAT_URL_API: string;
   CHAT_URL_SOCKET: string;
-  // PAYSTACK_PUBLIC_KEY: string;
+  PAYSTACK_PUBLIC_KEY: string;
 
   PROD_AUTH_URL_API: string;
   PROD_PROPERTY_URL_API: string;
   PROD_CHAT_URL_API: string;
   PROD_CHAT_URL_SOCKET: string;
-  // PROD_PAYSTACK_PUBLIC_KEY: string;
+  PROD_PAYSTACK_PUBLIC_KEY: string;
 
   AES_REQ_RES_KEY: string;
   AES_REQ_RES_IV: string;
@@ -62,7 +62,7 @@ const DEFAULT_URLS: IDefaultUrls = {
   PROPERTY_URL_API: import.meta.env.VITE_PROPERTY_URL_API,
   CHAT_URL_API: import.meta.env.VITE_CHAT_URL_API,
   CHAT_URL_SOCKET: import.meta.env.VITE_CHAT_URL_SOCKET,
-  // PAYSTACK_PUBLIC_KEY: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+  PAYSTACK_PUBLIC_KEY: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
 };
 
 const PRODUCTION_URLS: IProductionUrls = {
@@ -70,7 +70,7 @@ const PRODUCTION_URLS: IProductionUrls = {
   PROD_PROPERTY_URL_API: import.meta.env.VITE_PROD_PROPERTY_URL_API,
   PROD_CHAT_URL_API: import.meta.env.VITE_PROD_CHAT_URL_API,
   PROD_CHAT_URL_SOCKET: import.meta.env.VITE_PROD_CHAT_URL_SOCKET,
-  // PROD_PAYSTACK_PUBLIC_KEY: import.meta.env.VITE_PROD_PAYSTACK_PUBLIC_KEY,
+  PROD_PAYSTACK_PUBLIC_KEY: import.meta.env.VITE_PROD_PAYSTACK_PUBLIC_KEY,
 };
 
 const APP_URLS: IAppUrls = {
@@ -102,7 +102,7 @@ const dynamicEnvDefault: IGetDynamicEnv = {
   PROPERTY_URL_API: envConfig.PROPERTY_URL_API as string,
   CHAT_URL_API: envConfig.CHAT_URL_API as string,
   CHAT_URL_SOCKET: envConfig.CHAT_URL_SOCKET as string,
-  // PAYSTACK_PUBLIC_KEY: envConfig.PAYSTACK_PUBLIC_KEY as string,
+  PAYSTACK_PUBLIC_KEY: envConfig.PAYSTACK_PUBLIC_KEY as string,
 };
 
 const dynamicEnvProduction: IGetDynamicEnv = {
@@ -110,7 +110,7 @@ const dynamicEnvProduction: IGetDynamicEnv = {
   PROPERTY_URL_API: envConfig.PROD_PROPERTY_URL_API as string,
   CHAT_URL_API: envConfig.PROD_CHAT_URL_API as string,
   CHAT_URL_SOCKET: envConfig.PROD_CHAT_URL_SOCKET as string,
-  // PAYSTACK_PUBLIC_KEY: envConfig.PROD_PAYSTACK_PUBLIC_KEY as string,
+  PAYSTACK_PUBLIC_KEY: envConfig.PROD_PAYSTACK_PUBLIC_KEY as string,
 };
 
 export function DYNAMIC_ENV(): IGetDynamicEnv {
