@@ -111,13 +111,13 @@ const ProductSpecification: FC<ProductSpecificationProps> = ({ formik }) => {
         ))}
       </div>
       <Button
-        variant="outlined"
+        variant="ghost"
         size="small"
         className="capitalize"
         type="button"
         onClick={handleAddSpecification}
       >
-        Add Specification
+        Add more
       </Button>
     </section>
   );

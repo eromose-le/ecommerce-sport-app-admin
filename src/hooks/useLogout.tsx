@@ -22,7 +22,7 @@ function useLogout(): { logout: () => void } {
       }
     },
 
-    [authUser?.user, authUser?.user?.id, authUser?.token, dispatch, navigate]
+    [authUser?.id, authUser?.token, dispatch, navigate]
   );
 
   return { logout };

@@ -4,6 +4,7 @@ import { UPLOAD_FORMATS } from "@/constants/enums";
 import { uploadConfig } from "@/constants/AppConstants";
 import { convertSizeToBytes } from "@/utils/fileUtils";
 import { Button, Typography } from "@mui/material";
+import useExtendedSnackbar from "@/hooks/useExtendedSnackbar";
 
 const BACKEND_BASE_URL = import.meta.env.VITE_PUBLIC_API_URL;
 
@@ -17,6 +18,7 @@ interface ProductSingleImageUploaderProps {
 const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
   formik,
 }) => {
+  const { showSuccessSnackbar, showErrorSnackbar } = useExtendedSnackbar();
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
 
@@ -56,9 +58,10 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
     event.preventDefault();
     setIsUploading(true);
 
-    if (!files) {
+    console.log("files ::", files);
+    if (!files || files.length < 1) {
       setIsUploading(false);
-      alert("Please select at least one file.");
+      showErrorSnackbar("Please select at least one file.");
       return;
     }
 
@@ -76,6 +79,7 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
 
     if (!isValidFile) {
       console.log(`Invalid file. Ensure file type and size are correct.`);
+      showErrorSnackbar(`Invalid file. Ensure file type and size are correct.`);
       setIsUploading(false);
       return;
     }
@@ -87,16 +91,21 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
         files: Array.from(files),
       });
 
-      if (result) {
+      console.log("result ::", result);
+
+      if (result.length >= 1) {
         let displayImage = result[0]?.appUrl as string;
         formik.setFieldValue("displayImage", displayImage);
+        showSuccessSnackbar("Upload completed");
         setIsUploading(false);
       } else {
         setIsUploading(false);
+        showErrorSnackbar("Upload failed. Please try again.");
         console.log("Upload failed. Please try again.");
       }
     } catch (error) {
       setIsUploading(false);
+      showErrorSnackbar(`Error uploading file: ${error}`);
       console.log(`Error uploading file: ${error}`);
     }
   };

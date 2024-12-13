@@ -8,6 +8,7 @@ import {
   FileObject,
 } from "@/utils/fileUtils";
 import { Button, Typography } from "@mui/material";
+import useExtendedSnackbar from "@/hooks/useExtendedSnackbar";
 
 const BACKEND_BASE_URL = import.meta.env.VITE_PUBLIC_API_URL;
 
@@ -19,6 +20,7 @@ interface ProductVideoUploaderProps {
   formik: any;
 }
 const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
+  const { showSuccessSnackbar, showErrorSnackbar } = useExtendedSnackbar();
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
 
@@ -58,9 +60,9 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
     event.preventDefault();
     setIsUploading(true);
 
-    if (!files) {
+    if (!files || files.length < 1) {
       setIsUploading(false);
-      alert("Please select at least one file.");
+      showErrorSnackbar("Please select at least one file.");
       return;
     }
 
@@ -78,6 +80,7 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
 
     if (!isValidFile) {
       console.log(`Invalid file. Ensure file type and size are correct.`);
+      showErrorSnackbar(`Invalid file. Ensure file type and size are correct.`);
       setIsUploading(false);
       return;
     }
@@ -89,16 +92,19 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
         files: Array.from(files),
       });
 
-      if (result) {
+      if (result.length >= 1) {
         let newResult = extractVideoAppUrlsAndFileType(result[0] as FileObject);
         formik.setFieldValue("medias", [...formik.values.medias, newResult]);
+        showSuccessSnackbar("Upload completed");
         setIsUploading(false);
       } else {
         setIsUploading(false);
+        showErrorSnackbar("Upload failed. Please try again.");
         console.log("Upload failed. Please try again.");
       }
     } catch (error) {
       setIsUploading(false);
+      showErrorSnackbar(`Error uploading file: ${error}`);
       console.log(`Error uploading file: ${error}`);
     }
   };

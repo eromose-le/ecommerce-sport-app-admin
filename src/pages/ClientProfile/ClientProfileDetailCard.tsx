@@ -62,7 +62,7 @@ const ClientProfileDetailCard: FC<ClientProfileDetailCardProps> = ({
   ];
 
   return (
-    <section className="flex items-center gap-5 shadow-sm bg-white mt-10 rounded-2xl">
+    <section className="flex items-center flex-col lg:flex-row gap-5 shadow-sm bg-white mt-10 rounded-2xl">
       <div className="h-full max-w-[280px]">
         <img
           className="h-full min-h-[230px] rounded-tl-2xl rounded-bl-2xl"

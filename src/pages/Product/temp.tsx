@@ -26,13 +26,14 @@ import ProductKeyattribute from "./ProductKeyattribute";
 import useExtendedSnackbar from "@/hooks/useExtendedSnackbar";
 import { ApiProductStoreSlice } from "@/api/ApiProductStoreSlice";
 import { useNavigate } from "react-router-dom";
+import LoadingContent from "@/common/LoadingContent/LoadingContent";
 import {
-  TextFieldLoading,
-  TextFieldError,
   TextFieldEmpty,
+  TextFieldError,
+  TextFieldLoading,
 } from "@/common/TextFieldStateComponents/TextFieldStateComponents";
 import { routeEnum } from "@/constants/RouteConstants";
-// import { routeEnum } from "@/constants/RouteConstants";
+import useToggle from "@/hooks/useToggle";
 
 type TCategories = {
   id: string;
@@ -99,7 +100,21 @@ const ProductCreate: FC<ProductCreateProps> = () => {
   const { showSuccessSnackbar, showErrorSnackbar } = useExtendedSnackbar();
   const [categoryId, setCategoryId] = useState("");
   const [subcategories, setSubcategories] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+
+  const [isColorDropdown, _toggleIsColorDropdown, setToggleIsColorDropdown] =
+    useToggle(false);
+  const [isSizeDropdown, _toggleIsSizeDropdown, setToggleIsSizeDropdown] =
+    useToggle(false);
+  const [
+    isCategoryIdDropdown,
+    _toggleIsCategoryIdDropdown,
+    setToggleIsCategoryIdDropdown,
+  ] = useToggle(false);
+  const [
+    isSubcategoryIdDropdown,
+    _toggleIsSubcategoryIdDropdown,
+    setToggleIsSubcategoryIdDropdown,
+  ] = useToggle(false);
 
   const {
     data: colorsResponse,
@@ -127,6 +142,7 @@ const ProductCreate: FC<ProductCreateProps> = () => {
 
   const [createProduct, createProductResult] =
     ApiProductStoreSlice.useCreateProductMutation();
+
   useEffect(() => {
     // Get the subcategories from the selected category
     const selectedCategory = categorysResponse?.data?.find(
@@ -392,6 +408,194 @@ const ProductCreate: FC<ProductCreateProps> = () => {
             fullWidth
             margin="normal"
           />
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter product name here"
+            name="name"
+            id="productName"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
+            fullWidth
+            margin="normal"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-1 col-span-2">
+          <Typography
+            color="grey.700"
+            component="label"
+            className="font-medium text-sm font-inter capitalize"
+            htmlFor="description"
+          >
+            Product Description
+          </Typography>
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter product description here"
+            name="description"
+            id="description"
+            multiline
+            rows={4}
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.description && Boolean(formik.errors.description)
+            }
+            helperText={formik.touched.description && formik.errors.description}
+            fullWidth
+            margin="normal"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-1">
+          <Typography
+            color="grey.700"
+            component="label"
+            className="font-medium text-sm font-inter capitalize"
+            htmlFor="price"
+          >
+            <span className="text-[#D92D20] text-sm font-medium font-inter">
+              *
+            </span>
+            Product Price
+          </Typography>
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter product price here"
+            name="price"
+            id="price"
+            type="number"
+            value={formik.values.price}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.price && Boolean(formik.errors.price)}
+            helperText={formik.touched.price && formik.errors.price}
+            fullWidth
+            margin="normal"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-1">
+          <Typography
+            color="grey.700"
+            component="label"
+            className="font-medium text-sm font-inter capitalize"
+            htmlFor="stock"
+          >
+            Stock Count
+          </Typography>
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter stock count"
+            id="stock"
+            name="stock"
+            type="number"
+            value={formik.values.stock}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.stock && Boolean(formik.errors.stock)}
+            helperText={formik.touched.stock && formik.errors.stock}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter product name here"
+            name="name"
+            id="productName"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
+            fullWidth
+            margin="normal"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-1 col-span-2">
+          <Typography
+            color="grey.700"
+            component="label"
+            className="font-medium text-sm font-inter capitalize"
+            htmlFor="description"
+          >
+            Product Description
+          </Typography>
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter product description here"
+            name="description"
+            id="description"
+            multiline
+            rows={4}
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.description && Boolean(formik.errors.description)
+            }
+            helperText={formik.touched.description && formik.errors.description}
+            fullWidth
+            margin="normal"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-1">
+          <Typography
+            color="grey.700"
+            component="label"
+            className="font-medium text-sm font-inter capitalize"
+            htmlFor="price"
+          >
+            <span className="text-[#D92D20] text-sm font-medium font-inter">
+              *
+            </span>
+            Product Price
+          </Typography>
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter product price here"
+            name="price"
+            id="price"
+            type="number"
+            value={formik.values.price}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.price && Boolean(formik.errors.price)}
+            helperText={formik.touched.price && formik.errors.price}
+            fullWidth
+            margin="normal"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-1">
+          <Typography
+            color="grey.700"
+            component="label"
+            className="font-medium text-sm font-inter capitalize"
+            htmlFor="stock"
+          >
+            Stock Count
+          </Typography>
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter stock count"
+            id="stock"
+            name="stock"
+            type="number"
+            value={formik.values.stock}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.stock && Boolean(formik.errors.stock)}
+            helperText={formik.touched.stock && formik.errors.stock}
+            fullWidth
+            margin="normal"
+          />
         </div>
 
         <div className="flex flex-col space-y-1 col-span-2 md:col-span-1">
@@ -423,11 +627,11 @@ const ProductCreate: FC<ProductCreateProps> = () => {
               }
               IconComponent={() => (
                 <div className="p-2">
-                  <CustomDropdownIcon isOpen={isOpen} />
+                  <CustomDropdownIcon isOpen={isCategoryIdDropdown} />
                 </div>
               )}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
+              onOpen={() => setToggleIsCategoryIdDropdown(true)}
+              onClose={() => setToggleIsCategoryIdDropdown(false)}
               renderValue={(selected) => {
                 if (selected === "") {
                   return (
@@ -436,35 +640,32 @@ const ProductCreate: FC<ProductCreateProps> = () => {
                     </span>
                   );
                 }
-                const selectedCategory = categorysResponse?.data?.find(
+                return categorysResponse?.data?.find(
                   (category: TCategories) => category.id === selected
-                );
-                return selectedCategory ? selectedCategory.name : "";
+                )?.name;
               }}
             >
-              {categoryIsLoading ? (
-                <MenuItem disabled>
-                  <TextFieldLoading />
-                </MenuItem>
-              ) : categoryIsError ? (
-                <MenuItem disabled>
-                  <TextFieldError refetch={categoryRefetch} />
-                </MenuItem>
-              ) : categorysResponse?.data?.length === 0 ? (
-                <MenuItem disabled>
-                  <TextFieldEmpty />
-                </MenuItem>
-              ) : (
-                categorysResponse?.data?.map((category: TCategories) => (
-                  <MenuItem
-                    className="text-sm capitalize font-inter"
-                    key={category.id}
-                    value={category.id}
-                  >
-                    {category.name}
-                  </MenuItem>
-                ))
-              )}
+              <LoadingContent
+                loading={categoryIsLoading}
+                error={categoryIsError}
+                onReload={categoryRefetch}
+                loadingContent={<TextFieldLoading />}
+                errorContent={<TextFieldError refetch={categoryRefetch} />}
+                emptyContent={<TextFieldEmpty />}
+                data={categorysResponse?.data}
+              >
+                <>
+                  {categorysResponse?.data?.map((category: TCategories) => (
+                    <MenuItem
+                      className="text-sm capitalize font-inter"
+                      key={category?.id}
+                      value={category?.id}
+                    >
+                      {category?.name}
+                    </MenuItem>
+                  ))}
+                </>
+              </LoadingContent>
             </Select>
           </FormControl>
         </div>
@@ -497,11 +698,11 @@ const ProductCreate: FC<ProductCreateProps> = () => {
                 }
                 IconComponent={() => (
                   <div className="p-2">
-                    <CustomDropdownIcon isOpen={isOpen} />
+                    <CustomDropdownIcon isOpen={isSubcategoryIdDropdown} />
                   </div>
                 )}
-                onOpen={() => setIsOpen(true)}
-                onClose={() => setIsOpen(false)}
+                onOpen={() => setToggleIsSubcategoryIdDropdown(true)}
+                onClose={() => setToggleIsSubcategoryIdDropdown(false)}
                 renderValue={(selected): any => {
                   if (selected === "") {
                     return (
@@ -576,48 +777,46 @@ const ProductCreate: FC<ProductCreateProps> = () => {
               error={formik.touched.sizeIds && Boolean(formik.errors.sizeIds)}
               IconComponent={() => (
                 <div className="p-2">
-                  <CustomDropdownIcon isOpen={isOpen} />
+                  <CustomDropdownIcon isOpen={isSizeDropdown} />
                 </div>
               )}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
+              onOpen={() => setToggleIsSizeDropdown(true)}
+              onClose={() => setToggleIsSizeDropdown(false)}
             >
-              {sizeIsLoading ? (
-                <MenuItem disabled>
-                  <TextFieldLoading />
-                </MenuItem>
-              ) : sizeIsError ? (
-                <MenuItem disabled>
-                  <TextFieldError refetch={sizeRefetch} />
-                </MenuItem>
-              ) : sizesResponse?.data?.length === 0 ? (
-                <MenuItem disabled>
-                  <TextFieldEmpty />
-                </MenuItem>
-              ) : (
-                sizesResponse?.data?.map(
-                  (size: { id: string; name: string }) => (
-                    <MenuItem
-                      className="flex gap-1"
-                      key={size?.id}
-                      value={size?.id}
-                    >
-                      <Checkbox
-                        size="small"
-                        checked={
-                          (formik.values.sizeIds as string[]).indexOf(
-                            size?.id
-                          ) > -1
-                        }
-                      />
-                      <ListItemText
-                        className="text-xs capitalize font-inter"
-                        primary={size?.name}
-                      />
-                    </MenuItem>
-                  )
-                )
-              )}
+              <LoadingContent
+                loading={sizeIsLoading}
+                error={sizeIsError}
+                onReload={sizeRefetch}
+                loadingContent={<TextFieldLoading />}
+                errorContent={<TextFieldError refetch={sizeRefetch} />}
+                emptyContent={<TextFieldEmpty />}
+                data={sizesResponse?.data}
+              >
+                <>
+                  {sizesResponse?.data?.map(
+                    (size: { id: string; name: string }) => (
+                      <MenuItem
+                        className="flex gap-1"
+                        key={size?.id}
+                        value={size?.id}
+                      >
+                        <Checkbox
+                          size="small"
+                          checked={
+                            (formik.values.sizeIds as string[]).indexOf(
+                              size?.id
+                            ) > -1
+                          }
+                        />
+                        <ListItemText
+                          className="text-xs capitalize font-inter"
+                          primary={size?.name}
+                        />
+                      </MenuItem>
+                    )
+                  )}
+                </>
+              </LoadingContent>
             </Select>
           </FormControl>
         </div>
@@ -651,7 +850,7 @@ const ProductCreate: FC<ProductCreateProps> = () => {
                   );
                 }
 
-                // Map selected sizes and join them into a string
+                // Map selected colors and join them into a string
                 return colorsResponse?.data
                   ?.filter((color: { id: string }) =>
                     (selected as string[]).includes(color.id)
@@ -663,12 +862,13 @@ const ProductCreate: FC<ProductCreateProps> = () => {
               error={formik.touched.colorIds && Boolean(formik.errors.colorIds)}
               IconComponent={() => (
                 <div className="p-2">
-                  <CustomDropdownIcon isOpen={isOpen} />
+                  <CustomDropdownIcon isOpen={isColorDropdown} />
                 </div>
               )}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
+              onOpen={() => setToggleIsColorDropdown(true)}
+              onClose={() => setToggleIsColorDropdown(false)}
             >
+              {/* Conditionally render the loading/error state or the actual MenuItems */}
               {colorIsLoading ? (
                 <MenuItem disabled>
                   <TextFieldLoading />

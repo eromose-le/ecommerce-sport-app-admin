@@ -77,6 +77,9 @@ export default {
         "mobile-5xl": "1.75rem", // 28px
         "6xl": "4rem", // 64px
       },
+      animation: {
+        "spin-slow": "spin 3s linear infinite",
+      },
     },
   },
   plugins: [],
