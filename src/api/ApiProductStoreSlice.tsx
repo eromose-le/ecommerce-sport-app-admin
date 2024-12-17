@@ -59,6 +59,14 @@ export const ApiProductStoreSlice = sportygalaxyAdminApi.injectEndpoints({
       }),
       invalidatesTags: [RtkqTagEnum.PRODUCTS],
     }),
+    updateProduct: builder.mutation<any, any>({
+      query: ({ ...data }: any) => ({
+        url: "/products",
+        data,
+        method: "PUT",
+      }),
+      invalidatesTags: [RtkqTagEnum.PRODUCTS],
+    }),
   }),
   overrideExisting: false,
 });

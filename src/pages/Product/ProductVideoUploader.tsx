@@ -70,9 +70,11 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
 
     // Optional file validation
     const isValidFile = Array.from(files).every((file) => {
-      const validFileType = uploadConfig.allowedFileTypes.includes(file.type);
+      const validFileType = uploadConfig.allowedVideoFileTypes.includes(
+        file.type
+      );
       const validFileSize =
-        file.size <= convertSizeToBytes(uploadConfig.maxFileSize); // Use size in bytes
+        file.size <= convertSizeToBytes(uploadConfig.maxVideoFileSize); // Use size in bytes
 
       setIsUploading(false);
       return validFileType && validFileSize;
@@ -153,7 +155,7 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
                     id="video-file-upload"
                     name="video-file-upload"
                     type="file"
-                    accept={uploadConfig.allowedFileTypes.join(",")}
+                    accept={uploadConfig.allowedVideoFileTypes.join(",")}
                     className="sr-only"
                     // multiple
                     onChange={handleFileChange}

@@ -8,7 +8,7 @@ export const PAGINATION_DEFAULT = {
 // uploadConfig.ts
 export const uploadConfig = {
   maxFileSize: "4MB", // Max file size
-  maxFileCount: 5, // Max file count for multiple uploads
+  maxFileCount: 10, // Max file count for multiple uploads
   allowedFileTypes: [
     // Image MIME types
     "image/png",
@@ -23,7 +23,11 @@ export const uploadConfig = {
 
     // Document MIME types
     "application/pdf",
+  ], // Allowed MIME types, // Allowed MIME types
 
+  maxVideoFileCount: 1,
+  maxVideoFileSize: "32MB", // Max file size
+  allowedVideoFileTypes: [
     // Video MIME types
     "video/mp4",
     "video/mpeg",
@@ -33,5 +37,5 @@ export const uploadConfig = {
     "video/ogg",
     "video/x-matroska", // .mkv
     "video/*",
-  ], // Allowed MIME types, // Allowed MIME types
+  ],
 };

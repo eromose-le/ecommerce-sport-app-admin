@@ -14,6 +14,7 @@ const Home = lazy(() => import("@/pages/Home/Home"));
 
 const Product = lazy(() => import("@/pages/Product/Product"));
 const ProductCreate = lazy(() => import("@/pages/Product/ProductCreate"));
+const ProductUpdate = lazy(() => import("@/pages/Product/ProductUpdate"));
 const ProductDetail = lazy(() => import("@/pages/Product/ProductDetail"));
 
 const Client = lazy(() => import("@/pages/Client/Client"));
@@ -76,6 +77,11 @@ export const ProtectedRoutes: ExtendedRouteObject[] = [
       {
         path: routeEnum.PRODUCTS_CREATE,
         element: <ProductCreate />,
+        errorElement: <ErrorBoundaryRoot />,
+      },
+      {
+        path: routeEnum.PRODUCTS_UPDATE,
+        element: <ProductUpdate />,
         errorElement: <ErrorBoundaryRoot />,
       },
       {

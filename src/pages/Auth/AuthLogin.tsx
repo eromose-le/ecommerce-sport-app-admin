@@ -70,7 +70,7 @@ const AuthLogin: FC<AuthLoginProps> = () => {
 
   return (
     <div className="relative h-screen flex flex-col items-center justify-start">
-      <div className="container-wrapper mt-20 w-full max-w-[700px]">
+      <div className="container-wrapper mt-20 w-full max-w-[700px] z-[1]">
         <img src={Logo} alt="logo" />
 
         <div className="mt-14">

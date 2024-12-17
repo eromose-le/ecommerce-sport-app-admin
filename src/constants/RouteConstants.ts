@@ -2,11 +2,12 @@ export const routeEnum = {
   // Public
   HOME: "/",
   LOGIN: "/login",
-  
+
   USERS: "/users",
 
   PRODUCTS: "/products",
   PRODUCTS_CREATE: "/products/create",
+  PRODUCTS_UPDATE: "/products/update",
   PRODUCT_DETAILS: "/products/:id",
 
   // Client
