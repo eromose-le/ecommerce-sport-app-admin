@@ -8,7 +8,7 @@ import {
   IconButton,
   Button,
 } from "@mui/material";
-import { X, User01, Mail01, PhoneCall01 } from "@untitled-ui/icons-react";
+import { X, User01  } from "@untitled-ui/icons-react";
 import { FC } from "react";
 interface ProductDetailProps {}
 const ProductDetail: FC<ProductDetailProps> = () => {
