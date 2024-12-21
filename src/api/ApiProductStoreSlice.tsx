@@ -27,8 +27,8 @@ export const ApiProductStoreSlice = sportygalaxyAdminApi.injectEndpoints({
         let params = new URLSearchParams({
           page: (pageIndex + 1).toString(), // Ensure 1-based index
           limit: pageSize,
-          ...(globalFilter && { search: globalFilter }),
-          ...(productStatus && { search: productStatus }),
+          ...(globalFilter && { q: globalFilter }),
+          ...(productStatus && { q: productStatus }),
           ...(isDeleted && { isDeleted }),
           ...(isRequestDelete && { isRequestDelete }),
           ...(sorting?.length && {

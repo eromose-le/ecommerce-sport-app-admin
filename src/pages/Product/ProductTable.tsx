@@ -164,6 +164,22 @@ const ProductTable = () => {
           );
         }
 
+        // Description
+        if (cell.column.id === "description") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoProduct(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.PRODUCT_DESCRIPTION}
+              />
+            </td>
+          );
+        }
+
         // Cost
         if (cell.column.id === "price") {
           return (
@@ -291,7 +307,8 @@ const ProductTable = () => {
     return isDeletedMatch && requestDeleteMatch;
   });
 
-  const pageCount = productsResponse?.data?.pageCount;
+  const totalItems = productsResponse?.data?.count;
+  const pageCount = Math.ceil(totalItems / pageSize); 
 
   const fetchData = (
     pageIndex: number,
