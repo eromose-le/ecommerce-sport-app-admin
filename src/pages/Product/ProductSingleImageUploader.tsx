@@ -1,10 +1,11 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { generateReactHelpers } from "@uploadthing/react";
 import { UPLOAD_FORMATS } from "@/constants/enums";
 import { uploadConfig } from "@/constants/AppConstants";
 import { convertSizeToBytes } from "@/utils/fileUtils";
 import { Button, Typography } from "@mui/material";
 import useExtendedSnackbar from "@/hooks/useExtendedSnackbar";
+import { cn } from "@/lib/utils";
 
 const BACKEND_BASE_URL = import.meta.env.VITE_PUBLIC_API_URL;
 
@@ -23,6 +24,17 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
   const [previews, setPreviews] = useState<string[]>([]);
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isUploaded, setIsUploaded] = useState<boolean>(false);
+
+  // Prepopulate preview image from Formik's initial value
+  useEffect(() => {
+    if (
+      formik.values.displayImage &&
+      !previews.includes(formik.values.displayImage)
+    ) {
+      setPreviews([formik.values.displayImage]);
+    }
+  }, [formik.values.displayImage]);
 
   // Handle file selection and preview generation
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +69,7 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsUploading(true);
+    setIsUploaded(false);
 
     console.log("files ::", files);
     if (!files || files.length < 1) {
@@ -98,6 +111,7 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
         formik.setFieldValue("displayImage", displayImage);
         showSuccessSnackbar("Upload completed");
         setIsUploading(false);
+        setIsUploaded(true);
       } else {
         setIsUploading(false);
         showErrorSnackbar("Upload failed. Please try again.");
@@ -110,6 +124,8 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
     }
   };
 
+  const isFileUploaded = isUploaded || previews.length > 0;
+
   return (
     <>
       <form onSubmit={handleSubmit} className="w-full mt-4 max-w-lg mx-auto">
@@ -121,7 +137,7 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
         >
           Upload Display Image
         </Typography>
-      
+
         <div className="flex flex-col md:flex-row gap-2 items-start justify-start">
           {/* Dropzone area */}
           <div
@@ -170,7 +186,7 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
                 {previews.map((preview, index) => (
                   <div key={index} className="relative">
                     <img
-                      src={preview}
+                      src={!!preview ? preview : formik.values.displayImage}
                       alt={`Preview ${index + 1}`}
                       className="object-cover h-32 w-32 rounded-md flex items-center justify-center"
                     />
@@ -196,8 +212,15 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
 
           {/* Button */}
           <div className="">
-            <Button className="hover:bg-[#18dd81]" type="submit">
-              {isUploading ? "Uploading..." : "Upload"}
+            <Button
+              className={cn("hover:bg-[#18dd81] font-inter capitalize font-medium", isFileUploaded && "bg-green-900")}
+              type="submit"
+            >
+              {isUploading
+                ? "Uploading..."
+                : isFileUploaded
+                ? "Update"
+                : "Upload"}
             </Button>
           </div>
         </div>

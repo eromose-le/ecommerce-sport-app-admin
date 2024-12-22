@@ -7,7 +7,7 @@ export const routeEnum = {
 
   PRODUCTS: "/products",
   PRODUCTS_CREATE: "/products/create",
-  PRODUCTS_UPDATE: "/products/update",
+  PRODUCTS_UPDATE: "/products/:id/update",
   PRODUCT_DETAILS: "/products/:id",
 
   // Client

@@ -70,30 +70,74 @@ type FormatMediaArgs = {
   medias: MediaItem[];
 };
 
+// export const formatMedias = ({
+//   displayImage,
+//   completeVideo,
+//   medias,
+// }: FormatMediaArgs): MediaItem[] => {
+//   return (
+//     medias
+//       .map((media) => {
+//         // Add missing displayImage if not present
+//         if (!media.displayImage) {
+//           media.displayImage = displayImage;
+//         }
+
+//         // If video, add completeVideo link
+//         if (media.links && media.type.startsWith("video")) {
+//           media.links.completeVideo = completeVideo;
+//         }
+
+//         // Slice type by "/" and pick the first index
+//         media.type = media.type.split("/")[0];
+
+//         return media;
+//       })
+//       // Sort: move items with type 'image' first
+//       .sort((a, _b: any) => (a.type === "image" ? -1 : 1))
+//   );
+// };
+
+
+
 export const formatMedias = ({
   displayImage,
   completeVideo,
   medias,
 }: FormatMediaArgs): MediaItem[] => {
-  return (
-    medias
-      .map((media) => {
-        // Add missing displayImage if not present
-        if (!media.displayImage) {
-          media.displayImage = displayImage;
-        }
+  try {
+    if (!Array.isArray(medias) || medias.length === 0) {
+      // Return an empty array if medias is undefined or empty
+      return [];
+    }
 
-        // If video, add completeVideo link
-        if (media.links && media.type.startsWith("video")) {
-          media.links.completeVideo = completeVideo;
-        }
+    return (
+      medias
+        .map((media) => {
+          // If media doesn't have displayImage, use the provided displayImage
+          if (displayImage && !media.displayImage) {
+            media.displayImage = displayImage;
+          }
 
-        // Slice type by "/" and pick the first index
-        media.type = media.type.split("/")[0];
+          // If media is a video, add completeVideo link
+          if (media.links && media.type && media.type.startsWith("video")) {
+            if (completeVideo) {
+              media.links.completeVideo = completeVideo;
+            }
+          }
 
-        return media;
-      })
-      // Sort: move items with type 'image' first
-      .sort((a, _b: any) => (a.type === "image" ? -1 : 1))
-  );
+          // Slice type by "/" and pick the first index (ensure media.type is valid)
+          if (media.type) {
+            media.type = media.type.split("/")[0];
+          }
+
+          return media;
+        })
+        // Sort: move items with type 'image' first
+        .sort((a, _b: any) => (a.type === "image" ? -1 : 1))
+    );
+  } catch (error) {
+    console.error("Error formatting medias:", error);
+    return []; // Return an empty array in case of error
+  }
 };

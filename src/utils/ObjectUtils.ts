@@ -156,8 +156,26 @@ interface keyValueItem {
   value: string;
 }
 
-export const formatKeyValuePair = (arrayOfKeyValue: keyValueItem[]) => {
-  return arrayOfKeyValue?.map((keyValue) => ({
-    [keyValue?.key]: keyValue?.value,
-  }));
+export const formatKeyValuePair = (arrayOfKeyValue: keyValueItem[] = []) => {
+  if (!Array.isArray(arrayOfKeyValue) || arrayOfKeyValue.length === 0) {
+    // If the array is empty or undefined, return an empty array
+    return [];
+  }
+
+  try {
+    return arrayOfKeyValue
+      .map((keyValue) => {
+        if (keyValue?.key && keyValue?.value) {
+          return {
+            [keyValue.key]: keyValue.value,
+          };
+        }
+        // If key or value is missing, we return null or handle as needed
+        return null;
+      })
+      .filter((item) => item !== null); // Filter out null entries
+  } catch (error) {
+    console.error("Error formatting key-value pair:", error);
+    return [];
+  }
 };

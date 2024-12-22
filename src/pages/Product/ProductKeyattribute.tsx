@@ -1,13 +1,34 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button, IconButton, TextField, Typography } from "@mui/material";
 import { Trash04 } from "@untitled-ui/icons-react";
 
 interface ProductKeyattributeProps {
   formik: any;
+  initialKeyattributes?: Array<{ title: string; details: string }>; // Adjust the incoming data structure
 }
 
-const ProductKeyattribute: FC<ProductKeyattributeProps> = ({ formik }) => {
-  const [keyattributes, setKeyattributes] = useState([{ key: "", value: "" }]);
+const ProductKeyattribute: FC<ProductKeyattributeProps> = ({
+  formik,
+  initialKeyattributes = [],
+}) => {
+  const [keyattributes, setKeyattributes] = useState<
+    Array<{ key: any; value: any }>
+  >([{ key: "", value: "" }]);
+
+  // Transform initial data into the expected format on mount
+  useEffect(() => {
+    if (initialKeyattributes.length > 0) {
+      const formattedKeyAttrs = initialKeyattributes.map((keyAttr) => {
+        const entries = Object.entries(keyAttr);
+        return entries.length > 0
+          ? { key: entries[0][0], value: entries[0][1] }
+          : { key: "", value: "" };
+      });
+
+      setKeyattributes(formattedKeyAttrs);
+      formik.setFieldValue("keyattribute", formattedKeyAttrs); // Set initial formik field values
+    }
+  }, []);
 
   const handleAddKeyattribute = () => {
     setKeyattributes([...keyattributes, { key: "", value: "" }]);

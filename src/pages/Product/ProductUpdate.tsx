@@ -15,24 +15,23 @@ import * as Yup from "yup";
 import { ApiColorStoreSlice } from "@/api/ApiColorStoreSlice";
 import { ApiSizeStoreSlice } from "@/api/ApiSizeStoreSlice";
 import { ApiCategoryStoreSlice } from "@/api/ApiCategoryStoreSlice";
-// import { useDropzone } from "react-dropzone";
 import ProductImageUploader from "./ProductImageUploader";
 import ProductVideoUploader from "./ProductVideoUploader";
 import ProductSingleImageUploader from "./ProductSingleImageUploader";
-import { formatMedias } from "@/utils/fileUtils";
 import ProductSpecification from "./ProductSpecification";
 import { formatKeyValuePair } from "@/utils/ObjectUtils";
 import ProductKeyattribute from "./ProductKeyattribute";
 import useExtendedSnackbar from "@/hooks/useExtendedSnackbar";
 import { ApiProductStoreSlice } from "@/api/ApiProductStoreSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   TextFieldLoading,
   TextFieldError,
   TextFieldEmpty,
 } from "@/common/TextFieldStateComponents/TextFieldStateComponents";
 import { routeEnum } from "@/constants/RouteConstants";
-// import { routeEnum } from "@/constants/RouteConstants";
+import SportygalaxyLoadingIndicator from "@/common/Loading/SportygalaxyLoadingIndicator";
+import { ProductColor, ProductSize } from "@/types/product";
 
 type TCategories = {
   id: string;
@@ -65,16 +64,12 @@ type TSubcategories = {
 };
 
 const validationSchema = Yup.object({
-  displayImage: Yup.string().optional(),
+  displayImage: Yup.string().required("Display image is required"),
   completeVideo: Yup.string().optional(),
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
-  price: Yup.number()
-    .required("Price is required")
-    .positive("Price must be positive"),
-  stock: Yup.number()
-    .required("Stock is required")
-    .integer("Stock must be an integer"),
+  price: Yup.number().optional().positive("Price must be positive"),
+  stock: Yup.number().optional().integer("Stock must be an integer"),
   categoryId: Yup.string().required("Category is required"),
   subcategoryId: Yup.string().required("Subcategory is required"),
   sizeIds: Yup.array().min(1, "Select at least one size"),
@@ -93,9 +88,17 @@ const validationSchema = Yup.object({
   ),
 });
 
+const flattenSizeIds = (array: ProductSize[]): string[] => {
+  return array.map((item) => item.sizeId); // Extract only the sizeId
+};
+const flattenColorIds = (array: ProductColor[]): string[] => {
+  return array.map((item) => item.colorId); // Extract only the sizeId
+};
+
 interface ProductUpdateProps {}
 const ProductUpdate: FC<ProductUpdateProps> = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>() as { id: string };
   const { showSuccessSnackbar, showErrorSnackbar } = useExtendedSnackbar();
   const [categoryId, setCategoryId] = useState("");
   const [subcategories, setSubcategories] = useState([]);
@@ -135,38 +138,99 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
     setSubcategories(selectedCategory ? selectedCategory.subcategories : []);
   }, [categoryId, categorysResponse]);
 
+  const getProductInfoQuery = ApiProductStoreSlice.useGetProductInfoQuery(
+    {
+      id,
+    },
+    { skip: !id }
+  );
+  const productInfoResponse = getProductInfoQuery?.data?.data;
+
   const formik = useFormik({
     initialValues: {
-      name: "",
-      description: "",
-      price: "",
-      stock: "",
-      categoryId: "",
-      subcategoryId: "",
-      sizeIds: [],
-      colorIds: [],
-      displayImage: "",
-      completeVideo: "",
-      medias: [],
-      specification: [{ key: "", value: "" }],
-      keyattribute: [{ key: "", value: "" }],
+      name: productInfoResponse?.name || "",
+      description: productInfoResponse?.description || "",
+      price: productInfoResponse?.price || "",
+      stock: 0,
+      categoryId: productInfoResponse?.categoryId || "",
+      subcategoryId: productInfoResponse?.subcategoryId || "",
+      sizeIds: productInfoResponse?.sizeIds || [],
+      colorIds: productInfoResponse?.colorIds || [],
+      displayImage: productInfoResponse?.displayImage || "",
+      completeVideo: productInfoResponse?.completeVideo || "",
+      medias: productInfoResponse?.medias || [],
+      specification: productInfoResponse?.specification || [
+        { key: "", value: "" },
+      ],
+      keyattribute: productInfoResponse?.keyattribute || [
+        { key: "", value: "" },
+      ],
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const input = {
-          displayImage: values.displayImage,
-          completeVideo: values.completeVideo,
-          medias: values.medias,
-        };
+        // const input = {
+        //   displayImage: values.displayImage,
+        //   completeVideo: values.completeVideo,
+        //   medias: values.medias,
+        // };
 
-        const formattedMediaArray = formatMedias(input);
         const formattedSpecificationArray = formatKeyValuePair(
           values.specification
         );
         const formattedKeyattributeArray = formatKeyValuePair(
           values.keyattribute
         );
+
+        const validatePayload = (values: any) => {
+          const payload: any = {};
+
+          // List of fields to check and conditionally add to the payload
+          const fields = [
+            "name",
+            "description",
+            "price",
+            "stock",
+            "categoryId",
+            "subcategoryId",
+            "sizeIds",
+            "colorIds",
+            "displayImage",
+            "medias",
+            "specification",
+            "keyattribute",
+          ];
+
+          fields.forEach((field) => {
+            const value = values[field];
+
+            // Check for the value to ensure it's not undefined, an empty string, or an empty array
+            if (
+              value !== undefined &&
+              value !== "" &&
+              value !== 0 &&
+              (Array.isArray(value) ? value.length > 0 : true) &&
+              (typeof value !== "number" || !isNaN(value)) // Exclude NaN values for numbers
+            ) {
+              payload[field] = value;
+            }
+          });
+
+          // If medias, specification, or keyattribute are arrays, ensure they are formatted correctly before adding to payload
+          // if (values.medias && values.medias.length > 0) {
+          //   payload.medias = values.medias; // Assuming `formattedMediaArray` is already defined
+          // }
+
+          if (values.specification && values.specification.length > 0) {
+            payload.specification = formattedSpecificationArray; // Assuming `formattedSpecificationArray` is already defined
+          }
+
+          if (values.keyattribute && values.keyattribute.length > 0) {
+            payload.keyattribute = formattedKeyattributeArray; // Assuming `formattedKeyattributeArray` is already defined
+          }
+
+          return payload;
+        };
 
         const payload = {
           name: values.name,
@@ -178,16 +242,22 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
           sizeIds: values.sizeIds,
           colorIds: values.colorIds,
           displayImage: values.displayImage,
-          medias: formattedMediaArray,
+          medias: values.medias,
           specification: formattedSpecificationArray,
           keyattribute: formattedKeyattributeArray,
         };
-        // Handle submission to backend
 
-        console.log("backend payload", payload);
+        // console.log("DATA ::", {
+        //   input,
+        //   isAllowToEditImage,
+        //   formattedMediaArray,
+        //   payload,
+        //   validatePayload: validatePayload(payload),
+        // });
 
         const data = await updateProduct({
-          ...payload,
+          id,
+          ...validatePayload(payload),
         }).unwrap();
 
         showSuccessSnackbar(data?.message || "Successful");
@@ -208,6 +278,28 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
   if (colorError) {
     showErrorSnackbar(colorError?.message || "Error occured");
   }
+
+  useEffect(() => {
+    if (getProductInfoQuery?.data) {
+      const productData = getProductInfoQuery.data.data;
+
+      formik.setValues({
+        name: productData?.name || "",
+        description: productData?.description || "",
+        price: productData?.price || "",
+        stock: 0,
+        categoryId: productData?.categoryId || "",
+        subcategoryId: productData?.subcategoryId || "",
+        sizeIds: flattenSizeIds(productData?.sizes) || [],
+        colorIds: flattenColorIds(productData?.colors) || [],
+        displayImage: productData?.displayImage || "",
+        completeVideo: productData?.medias[1]?.links?.completeVideo || "",
+        medias: productData?.medias || [],
+        specification: productData?.specification || [{ key: "", value: "" }],
+        keyattribute: productData?.keyattribute || [{ key: "", value: "" }],
+      });
+    }
+  }, [getProductInfoQuery?.data]);
 
   // const { getRootProps, getInputProps } = useDropzone({
   //   onDrop: (acceptedFiles: any) => {
@@ -238,17 +330,29 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
     </svg>
   );
 
-  console.log("formik ::", formik.values);
+  const isLoading =
+    getProductInfoQuery.isLoading ||
+    getProductInfoQuery.isFetching ||
+    colorIsLoading ||
+    categoryIsLoading ||
+    sizeIsLoading;
+
+  if (isLoading) {
+    return <SportygalaxyLoadingIndicator />;
+  }
+
   return (
     <div className="wrapper space-y-4">
       <div className="flex flex-col md:flex-row flex-wrap gap-4">
+        {/* TODO: show image preview */}
+        {/* TODO: increment stock count */}
         <ProductSingleImageUploader formik={formik} />
         <ProductImageUploader formik={formik} />
         <ProductVideoUploader formik={formik} />
       </div>
 
       <form
-        onSubmit={formik.handleSubmit}
+        // onSubmit={formik.handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8"
       >
         {/* <div {...getRootProps()} className="dropzone">
@@ -279,7 +383,8 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
               Boolean(formik.errors.completeVideo)
             }
             helperText={
-              formik.touched.completeVideo && formik.errors.completeVideo
+              formik.touched.completeVideo &&
+              (formik.errors.completeVideo as any)
             }
             fullWidth
             margin="normal"
@@ -307,7 +412,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
+            helperText={formik.touched.name && (formik.errors.name as any)}
             fullWidth
             margin="normal"
           />
@@ -335,7 +440,9 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
             error={
               formik.touched.description && Boolean(formik.errors.description)
             }
-            helperText={formik.touched.description && formik.errors.description}
+            helperText={
+              formik.touched.description && (formik.errors.description as any)
+            }
             fullWidth
             margin="normal"
           />
@@ -363,7 +470,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.price && Boolean(formik.errors.price)}
-            helperText={formik.touched.price && formik.errors.price}
+            helperText={formik.touched.price && (formik.errors.price as any)}
             fullWidth
             margin="normal"
           />
@@ -376,8 +483,9 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
             className="font-medium text-sm font-inter capitalize"
             htmlFor="stock"
           >
-            Stock Count
+            Add Stock Count
           </Typography>
+
           <TextField
             className="MuiTextFieldOutlined--plain capitalize"
             placeholder="Enter stock count"
@@ -388,10 +496,19 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.stock && Boolean(formik.errors.stock)}
-            helperText={formik.touched.stock && formik.errors.stock}
+            helperText={formik.touched.stock && (formik.errors.stock as any)}
             fullWidth
             margin="normal"
+            inputProps={{ min: 0 }}
           />
+          <Typography
+            color="error"
+            component="label"
+            className="font-light text-xs font-inter capitalize"
+            htmlFor="stock"
+          >
+            remaining ({productInfoResponse?.stock || 0})
+          </Typography>
         </div>
 
         <div className="flex flex-col space-y-1 col-span-2 md:col-span-1">
@@ -656,7 +773,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
                   ?.filter((color: { id: string }) =>
                     (selected as string[]).includes(color.id)
                   )
-                  .map((color: any) => color.name)
+                  .map((color: { name: string }) => color.name)
                   .join(", ");
               }}
               onBlur={formik.handleBlur}
@@ -691,11 +808,9 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
                     >
                       <Checkbox
                         size="small"
-                        checked={
-                          (formik.values.colorIds as string[]).indexOf(
-                            color?.id
-                          ) > -1
-                        }
+                        checked={(formik.values.colorIds as string[]).includes(
+                          color.id
+                        )} // Checked if `color.id` exists in the selected values
                       />
                       <ListItemText
                         className="text-xs capitalize font-inter"
@@ -710,19 +825,26 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
         </div>
 
         <div className="flex flex-col gap-4 col-span-2">
-          <ProductSpecification formik={formik} />
-          <ProductKeyattribute formik={formik} />
+          <ProductSpecification
+            formik={formik}
+            initialSpecifications={productInfoResponse.specification || []}
+          />
+          <ProductKeyattribute
+            formik={formik}
+            initialKeyattributes={productInfoResponse?.keyattribute || []}
+          />
         </div>
 
         <div className="pt-4 pb-6 w-fit">
           <Button
-            type="submit"
-            className="capitalize"
+            type="button"
+            onClick={() => formik.handleSubmit()}
+            className="font-inter capitalize font-medium"
             variant="contained"
             color="primary"
             fullWidth
           >
-            {updateProductResult.isLoading ? "Submitting..." : "Submit"}
+            {updateProductResult.isLoading ? "Updating..." : "Update"}
           </Button>
         </div>
       </form>

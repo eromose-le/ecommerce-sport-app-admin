@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { generateReactHelpers } from "@uploadthing/react";
 import { UPLOAD_FORMATS } from "@/constants/enums";
 import { uploadConfig } from "@/constants/AppConstants";
@@ -9,6 +9,7 @@ import {
 } from "@/utils/fileUtils";
 import { Button, Typography } from "@mui/material";
 import useExtendedSnackbar from "@/hooks/useExtendedSnackbar";
+import { cn } from "@/lib/utils";
 
 const BACKEND_BASE_URL = import.meta.env.VITE_PUBLIC_API_URL;
 
@@ -25,6 +26,16 @@ const ProductImageUploader: FC<ProductImageUploaderProps> = ({ formik }) => {
   const [previews, setPreviews] = useState<string[]>([]);
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isUploaded, setIsUploaded] = useState<boolean>(false);
+
+  const images = formik?.values?.medias?.[0]?.images;
+
+  // Prepopulate preview image from Formik's initial value
+  useEffect(() => {
+    if (images?.length >= 1) {
+      setPreviews(images);
+    }
+  }, [images]);
 
   // Handle file selection and preview generation
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +70,7 @@ const ProductImageUploader: FC<ProductImageUploaderProps> = ({ formik }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsUploading(true);
+    setIsUploaded(false);
 
     if (!files || files.length < 1) {
       setIsUploading(false);
@@ -97,6 +109,7 @@ const ProductImageUploader: FC<ProductImageUploaderProps> = ({ formik }) => {
         formik.setFieldValue("medias", [...formik.values.medias, newResult]);
         showSuccessSnackbar("Upload completed");
         setIsUploading(false);
+        setIsUploaded(false);
       } else {
         setIsUploading(false);
         showErrorSnackbar("Upload failed. Please try again.");
@@ -108,6 +121,8 @@ const ProductImageUploader: FC<ProductImageUploaderProps> = ({ formik }) => {
       console.log(`Error uploading file: ${error}`);
     }
   };
+
+  const isFileUploaded = isUploaded || previews.length > 0;
 
   return (
     <>
@@ -169,7 +184,7 @@ const ProductImageUploader: FC<ProductImageUploaderProps> = ({ formik }) => {
                 {previews.map((preview, index) => (
                   <div key={index} className="relative">
                     <img
-                      src={preview}
+                      src={!!preview ? preview : images}
                       alt={`Preview ${index + 1}`}
                       className="object-cover h-32 w-32 rounded-md flex items-center justify-center"
                     />
@@ -177,12 +192,29 @@ const ProductImageUploader: FC<ProductImageUploaderProps> = ({ formik }) => {
                       type="button"
                       className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2 py-1"
                       onClick={() => {
+                        // Remove the selected file and preview
                         const newFiles = files.filter((_, i) => i !== index);
                         const newPreviews = previews.filter(
                           (_, i) => i !== index
                         );
+
+                        // Update Formik's medias field
+                        const updatedMedias =
+                          formik.values.medias[0]?.images.filter(
+                            (_: any, i: any) => i !== index
+                          );
+
                         setFiles(newFiles);
                         setPreviews(newPreviews);
+                        formik.setFieldValue(
+                          "medias",
+                          formik.values.medias.map(
+                            (media: any, mediaIndex: any) =>
+                              mediaIndex === 0 && media.type === "image"
+                                ? { ...media, images: updatedMedias }
+                                : media
+                          )
+                        );
                       }}
                     >
                       X
@@ -195,8 +227,18 @@ const ProductImageUploader: FC<ProductImageUploaderProps> = ({ formik }) => {
 
           {/* Button */}
           <div className="">
-            <Button className="hover:bg-[#18dd81]" type="submit">
-              {isUploading ? "Uploading..." : "Upload"}
+            <Button
+              className={cn(
+                "hover:bg-[#18dd81] font-inter capitalize font-medium",
+                isFileUploaded && "bg-green-900"
+              )}
+              type="submit"
+            >
+              {isUploading
+                ? "Uploading..."
+                : isFileUploaded
+                ? "Update"
+                : "Upload"}
             </Button>
           </div>
         </div>

@@ -308,7 +308,7 @@ const ProductTable = () => {
   });
 
   const totalItems = productsResponse?.data?.count;
-  const pageCount = Math.ceil(totalItems / pageSize); 
+  const pageCount = Math.ceil(totalItems / pageSize);
 
   const fetchData = (
     pageIndex: number,

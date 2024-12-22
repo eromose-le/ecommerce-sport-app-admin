@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { generateReactHelpers } from "@uploadthing/react";
 import { UPLOAD_FORMATS } from "@/constants/enums";
 import { uploadConfig } from "@/constants/AppConstants";
@@ -9,6 +9,7 @@ import {
 } from "@/utils/fileUtils";
 import { Button, Typography } from "@mui/material";
 import useExtendedSnackbar from "@/hooks/useExtendedSnackbar";
+import { cn } from "@/lib/utils";
 
 const BACKEND_BASE_URL = import.meta.env.VITE_PUBLIC_API_URL;
 
@@ -25,6 +26,16 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
   const [previews, setPreviews] = useState<string[]>([]);
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isUploaded, setIsUploaded] = useState<boolean>(false);
+
+  const introVideo = formik?.values?.medias?.[1]?.links?.introVideo;
+
+  // Prepopulate preview image from Formik's initial value
+  useEffect(() => {
+    if (introVideo && !previews.includes(introVideo)) {
+      setPreviews([introVideo]);
+    }
+  }, [introVideo]);
 
   // Handle file selection and preview generation
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +70,7 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsUploading(true);
+    setIsUploaded(false);
 
     if (!files || files.length < 1) {
       setIsUploading(false);
@@ -99,6 +111,7 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
         formik.setFieldValue("medias", [...formik.values.medias, newResult]);
         showSuccessSnackbar("Upload completed");
         setIsUploading(false);
+        setIsUploaded(false);
       } else {
         setIsUploading(false);
         showErrorSnackbar("Upload failed. Please try again.");
@@ -110,6 +123,8 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
       console.log(`Error uploading file: ${error}`);
     }
   };
+
+  const isFileUploaded = isUploaded || previews.length > 0;
 
   return (
     <>
@@ -165,16 +180,24 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
               <p className="text-xs text-gray-500">MP4 up to 32MB</p>
             </div>
 
-            {/* Image preview section */}
+            {/* Video preview section */}
             {previews.length > 0 && (
               <div className="mt-4 gap-4">
                 {previews.map((preview, index) => (
                   <div key={index} className="relative">
-                    <img
-                      src={preview}
-                      alt={`Preview ${index + 1}`}
+                    <video
+                      src={!!preview ? preview : introVideo}
                       className="object-cover h-32 w-32 rounded-md flex items-center justify-center"
+                      controls
+                      preload="metadata"
+                      onError={(e) => {
+                        console.error(
+                          "Failed to load video:",
+                          e.currentTarget.src
+                        );
+                      }}
                     />
+
                     <button
                       type="button"
                       className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2 py-1"
@@ -197,8 +220,18 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
 
           {/* Button */}
           <div className="">
-            <Button className="hover:bg-[#18dd81]" type="submit">
-              {isUploading ? "Uploading..." : "Upload"}
+            <Button
+              className={cn(
+                "hover:bg-[#18dd81] font-inter capitalize font-medium",
+                isFileUploaded && "bg-green-900"
+              )}
+              type="submit"
+            >
+              {isUploading
+                ? "Uploading..."
+                : isFileUploaded
+                ? "Update"
+                : "Upload"}
             </Button>
           </div>
         </div>

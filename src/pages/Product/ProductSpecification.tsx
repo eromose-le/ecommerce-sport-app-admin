@@ -1,14 +1,34 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button, IconButton, TextField, Typography } from "@mui/material";
 import { Trash04 } from "@untitled-ui/icons-react";
 
 interface ProductSpecificationProps {
   formik: any;
+  initialSpecifications?: Array<any>; // Adjust the incoming data structure
 }
-const ProductSpecification: FC<ProductSpecificationProps> = ({ formik }) => {
-  const [specifications, setSpecifications] = useState([
-    { key: "", value: "" },
-  ]);
+
+const ProductSpecification: FC<ProductSpecificationProps> = ({
+  formik,
+  initialSpecifications = [],
+}) => {
+  const [specifications, setSpecifications] = useState<
+    Array<{ key: any; value: any }>
+  >([{ key: "", value: "" }]);
+
+  // Transform initial data into the expected format on mount
+  useEffect(() => {
+    if (initialSpecifications.length > 0) {
+      const formattedSpecs = initialSpecifications.map((spec) => {
+        const entries = Object.entries(spec);
+        return entries.length > 0
+          ? { key: entries[0][0], value: entries[0][1] }
+          : { key: "", value: "" };
+      });
+
+      setSpecifications(formattedSpecs);
+      formik.setFieldValue("specification", formattedSpecs); // Set initial formik field values
+    }
+  }, []);
 
   const handleAddSpecification = () => {
     setSpecifications([...specifications, { key: "", value: "" }]);
