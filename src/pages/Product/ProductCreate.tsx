@@ -32,6 +32,7 @@ import {
   TextFieldEmpty,
 } from "@/common/TextFieldStateComponents/TextFieldStateComponents";
 import { routeEnum } from "@/constants/RouteConstants";
+import BackButton from "@/common/BackButton";
 // import { routeEnum } from "@/constants/RouteConstants";
 
 type TCategories = {
@@ -238,10 +239,15 @@ const ProductCreate: FC<ProductCreateProps> = () => {
     </svg>
   );
 
-  console.log("formik ::", formik.values);
   return (
-    <div className="wrapper space-y-4">
-      <div className="flex flex-col md:flex-row flex-wrap gap-4">
+    <div className="container-wrapper py-[30px] h-[calc(100vh-118.5px)]">
+      <div className="flex items-center justify-between">
+        <div>
+          <BackButton />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ProductSingleImageUploader formik={formik} />
         <ProductImageUploader formik={formik} />
         <ProductVideoUploader formik={formik} />
@@ -249,7 +255,7 @@ const ProductCreate: FC<ProductCreateProps> = () => {
 
       <form
         onSubmit={formik.handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-8"
       >
         {/* <div {...getRootProps()} className="dropzone">
           <input {...getInputProps()} />
@@ -717,12 +723,12 @@ const ProductCreate: FC<ProductCreateProps> = () => {
         <div className="pt-4 pb-6 w-fit">
           <Button
             type="submit"
-            className="capitalize"
+            className="font-inter capitalize font-medium"
             variant="contained"
             color="primary"
             fullWidth
           >
-            {createProductResult.isLoading ? "Submitting..." : "Submit"}
+            {createProductResult.isLoading ? "Submitting..." : "Create"}
           </Button>
         </div>
       </form>

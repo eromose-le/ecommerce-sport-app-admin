@@ -32,6 +32,7 @@ import {
 import { routeEnum } from "@/constants/RouteConstants";
 import SportygalaxyLoadingIndicator from "@/common/Loading/SportygalaxyLoadingIndicator";
 import { ProductColor, ProductSize } from "@/types/product";
+import BackButton from "@/common/BackButton";
 
 type TCategories = {
   id: string;
@@ -341,11 +342,17 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
     return <SportygalaxyLoadingIndicator />;
   }
 
+  console.log("productInfoResponse ::", productInfoResponse);
+
   return (
-    <div className="wrapper space-y-4">
-      <div className="flex flex-col md:flex-row flex-wrap gap-4">
-        {/* TODO: show image preview */}
-        {/* TODO: increment stock count */}
+    <div className="container-wrapper py-[30px] h-[calc(100vh-118.5px)]">
+      <div className="flex items-center justify-between">
+        <div>
+          <BackButton />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ProductSingleImageUploader formik={formik} />
         <ProductImageUploader formik={formik} />
         <ProductVideoUploader formik={formik} />
@@ -353,7 +360,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
 
       <form
         // onSubmit={formik.handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-8"
       >
         {/* <div {...getRootProps()} className="dropzone">
           <input {...getInputProps()} />
