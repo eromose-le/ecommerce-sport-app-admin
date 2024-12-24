@@ -266,28 +266,24 @@ const theme = createTheme(baseTheme, {
     MuiTextField: {
       defaultProps: {
         variant: "outlined",
-        // InputProps: { disableUnderline: true },
-        // InputLabelProps: { shrink: true },
       },
       variants: [
-        // {
-        //   props: { plain: true },
-        //   style: ({ theme }) => {
-        //     return {
-        //       "& .MuiInputBase-root > fieldset": {
-        //         border: "none",
-        //       },
-        //     };
-        //   },
-        // },
         {
           props: { size: "small" },
           style: () => {
             return {
-              // "& .MuiInputBase-root > fieldset": {
-              //   border: "none",
-              // },
+              // You can add additional size-specific styles here if needed
             };
+          },
+        },
+        {
+          props: { variant: "standard" }, // Define a new 'ghost' variant
+          style: {
+            "& .MuiInputBase-root": {
+              backgroundColor: "black", // No background
+              border: "none", // No border
+              boxShadow: "none", // No shadow
+            },
           },
         },
       ],
@@ -295,15 +291,20 @@ const theme = createTheme(baseTheme, {
         root: () => {
           return {
             "& label": {
-              // fontSize: "1.125rem",
-              // color: theme.palette.text.primary,
               top: 0,
               left: 0,
               "& + .MuiInputBase-root": {
                 marginTop: theme.spacing(0),
               },
             },
+
+            "&.MuiTextFieldOutlined--plain .MuiInputBase-root": {
+              paddingInline: "12px", // Targeting .MuiInputBase-root specifically
+            },
+
             "& .MuiInputBase-root": {
+              minHeight: "56px",
+              // height: "56px",
               color: (baseTheme.palette.grey as any)[900],
               fontSize: "0.875rem", // 14px
               fontWeight: 400,
@@ -313,41 +314,52 @@ const theme = createTheme(baseTheme, {
               borderRadius: "8px",
               border: `1px solid ${(baseTheme.palette.grey as any)[300]}`,
               boxShadow: "0px 1px 2px 0px #1018280D",
+
+              // Focused state - border and thicker width
               "&:focus-within": {
                 backgroundColor: "#fff",
                 borderColor: baseTheme.palette.primary.main,
+                borderWidth: "1px",
                 boxShadow: "0px 1px 2px 0px #1018280D",
               },
+
+              // Hover state - primary color border
               "&:hover": {
                 backgroundColor: "#fff",
                 borderColor: baseTheme.palette.primary.main,
                 boxShadow: "0px 1px 2px 0px #1018280D",
               },
+
+              // Placeholder text color
               "&::placeholder": {
                 color: baseTheme.palette.grey[500],
                 opacity: 1,
               },
+
+              // Disabled state
               "&.Mui-disabled": {
-                backgroundColor: (baseTheme.palette.grey as any)[100],
+                backgroundColor: (baseTheme.palette.grey as any)[200],
                 color: (baseTheme.palette.grey as any)[500],
+                opacity: 1,
                 borderColor: (baseTheme.palette.grey as any)[300],
                 boxShadow: "none",
                 "&:hover": {
-                  backgroundColor: (baseTheme.palette.grey as any)[100],
-                  color: (baseTheme.palette.grey as any)[500],
+                  backgroundColor: (baseTheme.palette.grey as any)[200],
+                  color: (baseTheme.palette.grey as any)[900],
                   borderColor: (baseTheme.palette.grey as any)[300],
                   boxShadow: "none",
                 },
               },
 
+              // Helper text
               "& + .MuiFormHelperText-root": {
                 marginLeft: 0,
               },
 
+              // Input padding for different sizes
               "& .MuiInputBase-input": {
                 padding: "18px 4px",
               },
-
               "&.MuiTextField-sizeSmall .MuiInputBase-input": {
                 padding: "6px 8px",
               },
@@ -357,8 +369,44 @@ const theme = createTheme(baseTheme, {
               "&.MuiTextField-sizeLarge .MuiInputBase-input": {
                 padding: "14px 16px",
               },
+
+              // Active state - black border when active
+              "&.Mui-active .MuiOutlinedInput-notchedOutline": {
+                borderColor: "black",
+              },
+
+              "& input[type='time']": {
+                // Styling for time input
+                // padding: "8px 12px",
+                fontSize: "14px",
+                fontFamily: "'Inter', sans-serif",
+                color: "#333", // Text color
+                borderRadius: "4px",
+                // border: "1px solid #ccc",
+                "&:focus": {
+                  outline: "none",
+                  // border: "1px solid #10b981", // Focus color
+                },
+                "&::-webkit-calendar-picker-indicator": {
+                  filter: "invert(50%)", // Optional: Style the clock icon
+                },
+              },
             },
           };
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        input: {
+          "&.Mui-disabled": {
+            opacity: 1, // Ensure it's visible
+            "-webkit-text-fill-color": "unset", // Remove default color for WebKit browsers
+            color: (baseTheme.palette.grey as any)[500], // Set your desired color for the value
+            "&::placeholder": {
+              color: (baseTheme.palette.grey as any)[900], // Set your desired color for the placeholder
+            },
+          },
         },
       },
     },
@@ -472,36 +520,60 @@ const theme = createTheme(baseTheme, {
           borderRadius: "8px",
           fontSize: "1rem",
           padding: "0px",
+          height: "56px",
           maxWidth: "none",
+
           "& .MuiSelect-select": {
             padding: "13.4px 12px",
           },
           "& .MuiSelect-icon": {
             right: "8px",
           },
+
+          // Active state background color
           "&.Mui-active": {
             backgroundColor: "#f5f5f5",
           },
+
+          // Default notched outline border color
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: (baseTheme.palette.primary as any)[700],
+            borderColor: (baseTheme.palette.grey as any)[300],
           },
-          "&.Mui-disabled": {
-            color: (baseTheme.palette.grey as any)[50],
-            backgroundColor: (baseTheme.palette.grey as any)[50],
-          },
+
+          // Hover state: adjust background and border color
           "&:hover .MuiSelect-select": {
-            backgroundColor: (baseTheme.palette.primary as any)[50],
+            // backgroundColor: (baseTheme.palette.primary as any)[50],
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: baseTheme.palette.primary.main,
+            borderColor: baseTheme.palette.primary.main, // Hover border color
+          },
+
+          // Disabled state styles
+          "&.Mui-disabled": {
+            color: (baseTheme.palette.grey as any)[900],
+            backgroundColor: (baseTheme.palette.grey as any)[200],
           },
           "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
-            borderColor: baseTheme.palette.action.disabled,
+            borderColor: (baseTheme.palette.grey as any)[300],
           },
           "&.Mui-disabled:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: baseTheme.palette.action.disabled,
+            borderColor: (baseTheme.palette.grey as any)[300],
+            backgroundColor: "transparent",
+          },
+
+          // Focused state: black border
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: baseTheme.palette.primary.main, // Focused border color
+            borderWidth: "1px", // Make the border a bit thicker when focused
+          },
+
+          // Active state: black border
+          "&.Mui-active .MuiOutlinedInput-notchedOutline": {
+            borderColor: "black", // Active border color
           },
         },
+
+        // Size variations
         small: {
           fontSize: "0.875rem",
           padding: "6px 8px",
@@ -520,20 +592,66 @@ const theme = createTheme(baseTheme, {
       styleOverrides: {
         root: {
           "&.MuiAutocomplete-hasPopupIcon .MuiOutlinedInput-root": {
-            paddingRight: "18px !important",
-            paddingLeft: "18px !important",
-            paddingBlock: "12px !important",
-            border: "none",
-            borderColor: "#fff",
+            paddingRight: "18px",
+            paddingLeft: "18px",
+            // paddingBlock: "12px",
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            border: `1px solid ${baseTheme.palette.primary.main}`,
-            borderColor: `${baseTheme.palette.primary.main} !important`,
+            // border: `1px solid ${baseTheme.palette.primary.main}`,
+            border: "none",
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            // border: `1px solid ${baseTheme.palette.primary.main}`,
+            border: "none",
+          },
+
+          // FIX
+          "&.Mui-error": {
+            "& .MuiOutlinedInput-root": {
+              borderColor: baseTheme.palette.error.main,
+              backgroundColor: baseTheme.palette.error.light,
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              border: `1px solid ${baseTheme.palette.error.main}`,
+            },
+          },
+          "&.Mui-disabled": {
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: (baseTheme.palette.grey as any)[200], // Light grey for disabled background
+              color: (baseTheme.palette.grey as any)[500], // Grey text color for disabled
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              border: `1px solid ${(baseTheme.palette.grey as any)[400]}`, // Grey border on hover
+            },
           },
         },
         popupIndicator: {
-          //  display: "none", // Hide the default popup indicator
+          // Optional: Hide the default popup indicator
+          // display: "none",
         },
+
+        // FIX
+        // Disabled state styles
+        // disabled: {
+        //   "& .MuiOutlinedInput-root": {
+        //     backgroundColor: (baseTheme.palette.grey as any)[200], // Light grey for disabled background
+        //     color: (baseTheme.palette.grey as any)[500], // Grey text color for disabled
+        //   },
+        //   "&:hover .MuiOutlinedInput-notchedOutline": {
+        //     border: `1px solid ${(baseTheme.palette.grey as any)[400]}`, // Grey border on hover
+        //   },
+        // },
+
+        // Error state styles
+        // error: {
+        //   "& .MuiOutlinedInput-root": {
+        //     borderColor: baseTheme.palette.error.main,
+        //     backgroundColor: baseTheme.palette.error.light,
+        //   },
+        //   "&:hover .MuiOutlinedInput-notchedOutline": {
+        //     border: `1px solid ${baseTheme.palette.error.main}`,
+        //   },
+        // },
       },
     },
     MuiChip: {

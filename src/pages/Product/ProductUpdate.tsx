@@ -2,11 +2,9 @@ import { FC, useState, useEffect } from "react";
 import { useFormik } from "formik";
 import {
   TextField,
-  Button,
   MenuItem,
   Select,
   FormControl,
-  OutlinedInput,
   Checkbox,
   ListItemText,
   Typography,
@@ -33,6 +31,9 @@ import { routeEnum } from "@/constants/RouteConstants";
 import SportygalaxyLoadingIndicator from "@/common/Loading/SportygalaxyLoadingIndicator";
 import { ProductColor, ProductSize } from "@/types/product";
 import BackButton from "@/common/BackButton";
+import { LoadingButton } from "@mui/lab";
+import DropdownIcon from "@/common/SVG/DropdownIcon";
+import useToggle from "@/hooks/useToggle";
 
 type TCategories = {
   id: string;
@@ -103,7 +104,27 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
   const { showSuccessSnackbar, showErrorSnackbar } = useExtendedSnackbar();
   const [categoryId, setCategoryId] = useState("");
   const [subcategories, setSubcategories] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+
+  const [isSizeIdDropdown, toggleIsSizeIdDropdown, setToggleIsSizeIdDropdown] =
+    useToggle(false);
+
+  const [
+    isColorIdDropdown,
+    toggleIsColorIdDropdown,
+    setToggleIsColorIdDropdown,
+  ] = useToggle(false);
+
+  const [
+    isCategoryIdDropdown,
+    toggleIsCategoryIdDropdown,
+    setToggleIsCategoryIdDropdown,
+  ] = useToggle(false);
+
+  const [
+    isSubcategoryIdDropdown,
+    toggleIsSubcategoryIdDropdown,
+    setToggleIsSubcategoryIdDropdown,
+  ] = useToggle(false);
 
   const {
     data: colorsResponse,
@@ -309,28 +330,6 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
   //   },
   // });
 
-  const CustomDropdownIcon = ({ isOpen }: { isOpen: boolean }) => (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{
-        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-        transition: "transform 0.3s ease",
-      }}
-    >
-      <path
-        d="M6 9L12 15L18 9"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-
   const isLoading =
     getProductInfoQuery.isLoading ||
     getProductInfoQuery.isFetching ||
@@ -341,8 +340,6 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
   if (isLoading) {
     return <SportygalaxyLoadingIndicator />;
   }
-
-  console.log("productInfoResponse ::", productInfoResponse);
 
   return (
     <div className="container-wrapper py-[30px] h-[calc(100vh-118.5px)]">
@@ -440,7 +437,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
             name="description"
             id="description"
             multiline
-            rows={4}
+            rows={6}
             value={formik.values.description}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -547,11 +544,15 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
               }
               IconComponent={() => (
                 <div className="p-2">
-                  <CustomDropdownIcon isOpen={isOpen} />
+                  <DropdownIcon
+                    toggle={toggleIsCategoryIdDropdown}
+                    isOpen={isCategoryIdDropdown}
+                  />
                 </div>
               )}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
+              open={isCategoryIdDropdown}
+              onOpen={() => setToggleIsCategoryIdDropdown(true)}
+              onClose={() => setToggleIsCategoryIdDropdown(false)}
               renderValue={(selected) => {
                 if (selected === "") {
                   return (
@@ -621,11 +622,15 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
                 }
                 IconComponent={() => (
                   <div className="p-2">
-                    <CustomDropdownIcon isOpen={isOpen} />
+                    <DropdownIcon
+                      toggle={toggleIsSubcategoryIdDropdown}
+                      isOpen={isSubcategoryIdDropdown}
+                    />
                   </div>
                 )}
-                onOpen={() => setIsOpen(true)}
-                onClose={() => setIsOpen(false)}
+                open={isSubcategoryIdDropdown}
+                onOpen={() => setToggleIsSubcategoryIdDropdown(true)}
+                onClose={() => setToggleIsSubcategoryIdDropdown(false)}
                 renderValue={(selected): any => {
                   if (selected === "") {
                     return (
@@ -677,7 +682,19 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
               name="sizeIds"
               value={formik.values.sizeIds}
               onChange={formik.handleChange}
-              input={<OutlinedInput />}
+              onBlur={formik.handleBlur}
+              error={formik.touched.sizeIds && Boolean(formik.errors.sizeIds)}
+              IconComponent={() => (
+                <div className="p-2">
+                  <DropdownIcon
+                    toggle={toggleIsSizeIdDropdown}
+                    isOpen={isSizeIdDropdown}
+                  />
+                </div>
+              )}
+              open={isSizeIdDropdown}
+              onOpen={() => setToggleIsSizeIdDropdown(true)}
+              onClose={() => setToggleIsSizeIdDropdown(false)}
               renderValue={(selected) => {
                 // Handle placeholder when nothing is selected
                 if (selected.length === 0) {
@@ -696,15 +713,6 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
                   .map((size: any) => size.name)
                   .join(", ");
               }}
-              onBlur={formik.handleBlur}
-              error={formik.touched.sizeIds && Boolean(formik.errors.sizeIds)}
-              IconComponent={() => (
-                <div className="p-2">
-                  <CustomDropdownIcon isOpen={isOpen} />
-                </div>
-              )}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
             >
               {sizeIsLoading ? (
                 <MenuItem disabled>
@@ -764,7 +772,19 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
               name="colorIds"
               value={formik.values.colorIds}
               onChange={formik.handleChange}
-              input={<OutlinedInput />}
+              onBlur={formik.handleBlur}
+              error={formik.touched.colorIds && Boolean(formik.errors.colorIds)}
+              IconComponent={() => (
+                <div className="p-2">
+                  <DropdownIcon
+                    toggle={toggleIsColorIdDropdown}
+                    isOpen={isColorIdDropdown}
+                  />
+                </div>
+              )}
+              open={isColorIdDropdown}
+              onOpen={() => setToggleIsColorIdDropdown(true)}
+              onClose={() => setToggleIsColorIdDropdown(false)}
               renderValue={(selected) => {
                 // Handle placeholder when nothing is selected
                 if (selected.length === 0) {
@@ -775,7 +795,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
                   );
                 }
 
-                // Map selected sizes and join them into a string
+                // Map selected colors and join them into a string
                 return colorsResponse?.data
                   ?.filter((color: { id: string }) =>
                     (selected as string[]).includes(color.id)
@@ -783,15 +803,6 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
                   .map((color: { name: string }) => color.name)
                   .join(", ");
               }}
-              onBlur={formik.handleBlur}
-              error={formik.touched.colorIds && Boolean(formik.errors.colorIds)}
-              IconComponent={() => (
-                <div className="p-2">
-                  <CustomDropdownIcon isOpen={isOpen} />
-                </div>
-              )}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
             >
               {colorIsLoading ? (
                 <MenuItem disabled>
@@ -843,16 +854,18 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
         </div>
 
         <div className="pt-4 pb-6 w-fit">
-          <Button
+          <LoadingButton
+            disabled={isLoading || updateProductResult.isLoading}
+            loading={updateProductResult.isLoading}
             type="button"
             onClick={() => formik.handleSubmit()}
-            className="font-inter capitalize font-medium"
+            className="capitalize font-semibold text-base font-inter md:px-10"
             variant="contained"
             color="primary"
             fullWidth
           >
-            {updateProductResult.isLoading ? "Updating..." : "Update"}
-          </Button>
+            Update
+          </LoadingButton>
         </div>
       </form>
     </div>

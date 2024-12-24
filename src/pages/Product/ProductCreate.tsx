@@ -2,11 +2,9 @@ import { FC, useState, useEffect } from "react";
 import { useFormik } from "formik";
 import {
   TextField,
-  Button,
   MenuItem,
   Select,
   FormControl,
-  OutlinedInput,
   Checkbox,
   ListItemText,
   Typography,
@@ -33,6 +31,10 @@ import {
 } from "@/common/TextFieldStateComponents/TextFieldStateComponents";
 import { routeEnum } from "@/constants/RouteConstants";
 import BackButton from "@/common/BackButton";
+import SportygalaxyLoadingIndicator from "@/common/Loading/SportygalaxyLoadingIndicator";
+import { LoadingButton } from "@mui/lab";
+import useToggle from "@/hooks/useToggle";
+import DropdownIcon from "@/common/SVG/DropdownIcon";
 // import { routeEnum } from "@/constants/RouteConstants";
 
 type TCategories = {
@@ -100,7 +102,27 @@ const ProductCreate: FC<ProductCreateProps> = () => {
   const { showSuccessSnackbar, showErrorSnackbar } = useExtendedSnackbar();
   const [categoryId, setCategoryId] = useState("");
   const [subcategories, setSubcategories] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+
+  const [isSizeIdDropdown, toggleIsSizeIdDropdown, setToggleIsSizeIdDropdown] =
+    useToggle(false);
+
+  const [
+    isColorIdDropdown,
+    toggleIsColorIdDropdown,
+    setToggleIsColorIdDropdown,
+  ] = useToggle(false);
+
+  const [
+    isCategoryIdDropdown,
+    toggleIsCategoryIdDropdown,
+    setToggleIsCategoryIdDropdown,
+  ] = useToggle(false);
+
+  const [
+    isSubcategoryIdDropdown,
+    toggleIsSubcategoryIdDropdown,
+    setToggleIsSubcategoryIdDropdown,
+  ] = useToggle(false);
 
   const {
     data: colorsResponse,
@@ -183,10 +205,8 @@ const ProductCreate: FC<ProductCreateProps> = () => {
           specification: formattedSpecificationArray,
           keyattribute: formattedKeyattributeArray,
         };
+
         // Handle submission to backend
-
-        console.log("backend payload", payload);
-
         const data = await createProduct({
           ...payload,
         }).unwrap();
@@ -217,27 +237,11 @@ const ProductCreate: FC<ProductCreateProps> = () => {
   //   },
   // });
 
-  const CustomDropdownIcon = ({ isOpen }: { isOpen: boolean }) => (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{
-        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-        transition: "transform 0.3s ease",
-      }}
-    >
-      <path
-        d="M6 9L12 15L18 9"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  const isLoading = colorIsLoading || categoryIsLoading || sizeIsLoading;
+
+  if (isLoading) {
+    return <SportygalaxyLoadingIndicator />;
+  }
 
   return (
     <div className="container-wrapper py-[30px] h-[calc(100vh-118.5px)]">
@@ -334,7 +338,7 @@ const ProductCreate: FC<ProductCreateProps> = () => {
             name="description"
             id="description"
             multiline
-            rows={4}
+            rows={6}
             value={formik.values.description}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -429,11 +433,15 @@ const ProductCreate: FC<ProductCreateProps> = () => {
               }
               IconComponent={() => (
                 <div className="p-2">
-                  <CustomDropdownIcon isOpen={isOpen} />
+                  <DropdownIcon
+                    toggle={toggleIsCategoryIdDropdown}
+                    isOpen={isCategoryIdDropdown}
+                  />
                 </div>
               )}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
+              open={isCategoryIdDropdown}
+              onOpen={() => setToggleIsCategoryIdDropdown(true)}
+              onClose={() => setToggleIsCategoryIdDropdown(false)}
               renderValue={(selected) => {
                 if (selected === "") {
                   return (
@@ -503,11 +511,15 @@ const ProductCreate: FC<ProductCreateProps> = () => {
                 }
                 IconComponent={() => (
                   <div className="p-2">
-                    <CustomDropdownIcon isOpen={isOpen} />
+                    <DropdownIcon
+                      toggle={toggleIsSubcategoryIdDropdown}
+                      isOpen={isSubcategoryIdDropdown}
+                    />
                   </div>
                 )}
-                onOpen={() => setIsOpen(true)}
-                onClose={() => setIsOpen(false)}
+                open={isSubcategoryIdDropdown}
+                onOpen={() => setToggleIsSubcategoryIdDropdown(true)}
+                onClose={() => setToggleIsSubcategoryIdDropdown(false)}
                 renderValue={(selected): any => {
                   if (selected === "") {
                     return (
@@ -559,7 +571,19 @@ const ProductCreate: FC<ProductCreateProps> = () => {
               name="sizeIds"
               value={formik.values.sizeIds}
               onChange={formik.handleChange}
-              input={<OutlinedInput />}
+              onBlur={formik.handleBlur}
+              error={formik.touched.sizeIds && Boolean(formik.errors.sizeIds)}
+              IconComponent={() => (
+                <div className="p-2">
+                  <DropdownIcon
+                    toggle={toggleIsSizeIdDropdown}
+                    isOpen={isSizeIdDropdown}
+                  />
+                </div>
+              )}
+              open={isSizeIdDropdown}
+              onOpen={() => setToggleIsSizeIdDropdown(true)}
+              onClose={() => setToggleIsSizeIdDropdown(false)}
               renderValue={(selected) => {
                 // Handle placeholder when nothing is selected
                 if (selected.length === 0) {
@@ -578,15 +602,6 @@ const ProductCreate: FC<ProductCreateProps> = () => {
                   .map((size: any) => size.name)
                   .join(", ");
               }}
-              onBlur={formik.handleBlur}
-              error={formik.touched.sizeIds && Boolean(formik.errors.sizeIds)}
-              IconComponent={() => (
-                <div className="p-2">
-                  <CustomDropdownIcon isOpen={isOpen} />
-                </div>
-              )}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
             >
               {sizeIsLoading ? (
                 <MenuItem disabled>
@@ -646,7 +661,19 @@ const ProductCreate: FC<ProductCreateProps> = () => {
               name="colorIds"
               value={formik.values.colorIds}
               onChange={formik.handleChange}
-              input={<OutlinedInput />}
+              onBlur={formik.handleBlur}
+              error={formik.touched.colorIds && Boolean(formik.errors.colorIds)}
+              IconComponent={() => (
+                <div className="p-2">
+                  <DropdownIcon
+                    toggle={toggleIsColorIdDropdown}
+                    isOpen={isColorIdDropdown}
+                  />
+                </div>
+              )}
+              open={isColorIdDropdown}
+              onOpen={() => setToggleIsColorIdDropdown(true)}
+              onClose={() => setToggleIsColorIdDropdown(false)}
               renderValue={(selected) => {
                 // Handle placeholder when nothing is selected
                 if (selected.length === 0) {
@@ -657,7 +684,7 @@ const ProductCreate: FC<ProductCreateProps> = () => {
                   );
                 }
 
-                // Map selected sizes and join them into a string
+                // Map selected colors and join them into a string
                 return colorsResponse?.data
                   ?.filter((color: { id: string }) =>
                     (selected as string[]).includes(color.id)
@@ -665,15 +692,6 @@ const ProductCreate: FC<ProductCreateProps> = () => {
                   .map((color: any) => color.name)
                   .join(", ");
               }}
-              onBlur={formik.handleBlur}
-              error={formik.touched.colorIds && Boolean(formik.errors.colorIds)}
-              IconComponent={() => (
-                <div className="p-2">
-                  <CustomDropdownIcon isOpen={isOpen} />
-                </div>
-              )}
-              onOpen={() => setIsOpen(true)}
-              onClose={() => setIsOpen(false)}
             >
               {colorIsLoading ? (
                 <MenuItem disabled>
@@ -721,15 +739,17 @@ const ProductCreate: FC<ProductCreateProps> = () => {
         </div>
 
         <div className="pt-4 pb-6 w-fit">
-          <Button
+          <LoadingButton
+            disabled={isLoading}
             type="submit"
             className="font-inter capitalize font-medium"
             variant="contained"
+            loading={createProductResult.isLoading}
             color="primary"
             fullWidth
           >
-            {createProductResult.isLoading ? "Submitting..." : "Create"}
-          </Button>
+            Create
+          </LoadingButton>
         </div>
       </form>
     </div>

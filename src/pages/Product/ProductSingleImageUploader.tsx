@@ -22,6 +22,7 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
   const { showSuccessSnackbar, showErrorSnackbar } = useExtendedSnackbar();
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
@@ -51,6 +52,7 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
   // Handle file drop for drag-and-drop functionality
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    setIsDragging(false);
     const droppedFiles = event.dataTransfer.files;
     if (droppedFiles) {
       const fileArray = Array.from(droppedFiles);
@@ -64,6 +66,16 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
   // Handle drag over to prevent default behavior
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+  };
+
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -141,9 +153,14 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
         <div className="flex flex-col md:flex-row gap-2 items-start justify-start">
           {/* Dropzone area */}
           <div
-            className="flex flex-col justify-start items-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 focus:outline-none cursor-pointer"
+            className={cn(
+              "flex flex-col justify-start items-center px-12 py-12 border-2 border-gray-300 border-dashed rounded-md hover:border-orange-200 focus:outline-none cursor-pointer",
+              isDragging ? "border-green-500" : "border-gray-300"
+            )}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
           >
             <div className="space-y-1 text-center">
               <svg
@@ -213,7 +230,10 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
           {/* Button */}
           <div className="">
             <Button
-              className={cn("hover:bg-[#18dd81] font-inter capitalize font-medium", isFileUploaded && "bg-green-900")}
+              className={cn(
+                "hover:bg-[#18dd81] font-inter capitalize font-medium",
+                isFileUploaded && "bg-green-900"
+              )}
               type="submit"
             >
               {isUploading

@@ -28,6 +28,7 @@ const ProductDetail: FC<ProductDetailProps> = () => {
 
   // const id = productInfoResponse?.id || "";
   const name = productInfoResponse?.name || "";
+  const displayImage = productInfoResponse?.displayImage || "";
   const description = productInfoResponse?.description || "";
   const price = productInfoResponse?.price || "";
   const stock = productInfoResponse?.stock || 0;
@@ -86,6 +87,7 @@ const ProductDetail: FC<ProductDetailProps> = () => {
         ) : (
           <div className="mt-10 space-y-10">
             <ProductImageViewer
+              displayImage={displayImage}
               medias={medias}
               isLoading={getProductInfoQuery.isLoading}
               isError={getProductInfoQuery.isError}
