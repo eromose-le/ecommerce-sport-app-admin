@@ -236,6 +236,22 @@ const OrderTable = () => {
           );
         }
 
+        // Order total
+        if (cell.column.id === "total") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoOrder(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.ORDER_PRICE}
+              />
+            </td>
+          );
+        }
+
         // Default
         return (
           <td

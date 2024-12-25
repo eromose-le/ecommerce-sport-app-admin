@@ -109,11 +109,20 @@ const TableText: FC<TableTextProps> = ({ type, value }) => {
       <>
         {value?.items?.map((product: any, index: any) => (
           <Typography
+            component="span"
             key={`${product?.product?.id}${index}`}
             color="grey.900"
-            className="font-crimson font-bold text-md max-w-[200px] capitalize"
+            className="font-crimson font-bold text-sm max-w-[200px] capitalize"
           >
-            {product?.product?.name} {value?.items?.length > 1 ? ", " : ""}
+            {product?.product?.name}
+            {index < value?.items?.length - 1 && (
+              <Typography
+                color="error"
+                className="font-crimson font-bold text-lg"
+              >
+                ,
+              </Typography>
+            )}
           </Typography>
         ))}
       </>
@@ -140,6 +149,14 @@ const TableText: FC<TableTextProps> = ({ type, value }) => {
           })}
         </AvatarGroup>
       </div>
+    );
+  }
+
+  if (type === TABLE_ROW_TYPE.ORDER_PRICE) {
+    return (
+      <Typography color="grey.900" className="font-inter font-medium text-sm">
+        {formatCurrency(value?.total || 0)}
+      </Typography>
     );
   }
 
