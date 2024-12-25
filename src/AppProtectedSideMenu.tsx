@@ -11,6 +11,7 @@ import theme from "../mui.config";
 import SportygalaxyLogo from "/sportygalaxy-logo.svg";
 import {
   ChevronUp,
+  Container,
   Home03,
   LogOut01,
   SearchLg,
@@ -49,6 +50,11 @@ const NORMAL_LINKS: LinkType[] = [
     title: "Products",
     icon: <SearchLg />,
     path: routeEnum.PRODUCTS,
+  },
+  {
+    title: "Orders",
+    icon: <Container />,
+    path: routeEnum.ORDERS,
   },
 ];
 
@@ -175,9 +181,9 @@ const NavAccordion = ({ title, icon, subLinks }: AccordionLinkType) => {
 const AppProtectedSideMenu: React.FC<Props> = ({ className = "" }) => {
   // Combine normal links and accordion links
   const COMBINED_LINKS: CombinedLinkType[] = [
-    ...NORMAL_LINKS.slice(0, 2), // "Dashboard" and "Explore Marketplace"
+    ...NORMAL_LINKS.slice(0, 3), // "Dashboard" and "Explore Marketplace"
     ACCORDION_LINKS[0], // Insert "Users" accordion link here
-    ...NORMAL_LINKS.slice(2), // Rest of the normal links starting with "Leads"
+    ...NORMAL_LINKS.slice(3), // Rest of the normal links starting with "Leads"
   ];
 
   // Type guard to check if the link is an AccordionLinkType

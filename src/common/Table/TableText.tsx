@@ -1,9 +1,10 @@
 import { FC } from "react";
-import { Avatar, Typography, Chip } from "@mui/material";
+import { Avatar, Typography, Chip, AvatarGroup } from "@mui/material";
 import { Calendar } from "@untitled-ui/icons-react";
 import { TABLE_ROW_TYPE } from "@/constants/enums";
 import { formatCurrency } from "@/utils/currencyUtils";
 import { transformDate } from "@/utils/dateUtils";
+import OrderStatus from "../OrderStatus";
 
 interface TableTextProps {
   type: string;
@@ -99,6 +100,88 @@ const TableText: FC<TableTextProps> = ({ type, value }) => {
             </Typography>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (type === TABLE_ROW_TYPE.ORDER_PRODUCT_NAME) {
+    return (
+      <>
+        {value?.items?.map((product: any, index: any) => (
+          <Typography
+            key={`${product?.product?.id}${index}`}
+            color="grey.900"
+            className="font-crimson font-bold text-md max-w-[200px] capitalize"
+          >
+            {product?.product?.name} {value?.items?.length > 1 ? ", " : ""}
+          </Typography>
+        ))}
+      </>
+    );
+  }
+
+  if (type === TABLE_ROW_TYPE.ORDER_NAME) {
+    const orderCount = Number(value?.items?.length) || 0;
+    return (
+      <div className="flex items-center gap-2">
+        <AvatarGroup
+          className="flex items-center justify-end w-6 h-6"
+          total={orderCount}
+        >
+          {value?.items?.map((product: any, index: number) => {
+            return (
+              <Avatar
+                src={product?.product?.displayImage}
+                alt={product?.product.name}
+                className="rounded-md w-10 h-10"
+                key={`${product?.product?.id}${index}`}
+              />
+            );
+          })}
+        </AvatarGroup>
+      </div>
+    );
+  }
+
+  if (type === TABLE_ROW_TYPE.ORDER_STATUS) {
+    return <OrderStatus status={value?.status} />;
+  }
+
+  if (type === TABLE_ROW_TYPE.ORDERED_ITEM_COUNT) {
+    return (
+      <div>
+        <Typography
+          color="grey.900"
+          className="font-crimson font-bold text-md max-w-[200px] capitalize"
+        >
+          {value?.items?.length}
+        </Typography>
+      </div>
+    );
+  }
+
+  if (type === TABLE_ROW_TYPE.CREATED_AT_DATE) {
+    return (
+      <div>
+        <Typography
+          color="grey.900"
+          className="font-crimson font-bold text-md max-w-[200px] capitalize"
+        >
+          {transformDate(value?.createdAt)}
+        </Typography>
+      </div>
+    );
+  }
+
+  if (type === TABLE_ROW_TYPE.UPDATED_AT_DATE) {
+    return (
+      <div>
+        <Typography
+          color="grey.900"
+          className="font-crimson font-bold text-md max-w-[200px] capitalize"
+        >
+          {transformDate(value?.updatedAt)}
+        </Typography>
       </div>
     );
   }

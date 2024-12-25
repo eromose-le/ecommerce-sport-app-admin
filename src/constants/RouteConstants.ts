@@ -10,6 +10,11 @@ export const routeEnum = {
   PRODUCTS_UPDATE: "/products/:id/update",
   PRODUCT_DETAILS: "/products/:id",
 
+  ORDERS: "/orders",
+  ORDERS_CREATE: "/orders/create",
+  ORDERS_UPDATE: "/orders/:id/update",
+  ORDER_DETAILS: "/orders/:id",
+
   // Client
   USERS_CLIENTS: "/users/client-list",
   USERS_CLIENT_DETAILS: "/users/client-profile/:id",

@@ -9,6 +9,7 @@ export const RtkqTagEnum = {
   CLIENTS: "CLIENTS",
   ADMINS: "ADMINS",
 
+  ORDERS: "ORDERS",
   COLORS: "COLORS",
   SIZES: "SIZES",
   TYPES: "TYPES",
