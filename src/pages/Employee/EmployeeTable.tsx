@@ -36,11 +36,15 @@ const EmployeeTable = () => {
     navigate(route);
   };
 
-  const columns: ColumnDef<any, any>[] = [
-    { accessorKey: "name", header: "Employee's Name" },
-    { accessorKey: "id", header: "Employee ID" },
-    { accessorKey: "isVerified", header: "Account Verified" },
-  ];
+   const columns: ColumnDef<any, any>[] = [
+     { accessorKey: "name", header: "Employee's Name" },
+     // { accessorKey: "id", header: "ID" },
+     { accessorKey: "phone", header: "Phone" },
+     { accessorKey: "email", header: "Email" },
+     { accessorKey: "address", header: "Address" },
+     { accessorKey: "isVerified", header: "Account Verified" },
+     { accessorKey: "isDeleted", header: "Account Deleted" },
+   ];
 
   // Custom renderHeader function
   const renderHeader = (headerGroup: HeaderGroup<User>) => (
@@ -82,7 +86,7 @@ const EmployeeTable = () => {
             >
               <TableText
                 value={cell.row.original}
-                type={TABLE_ROW_TYPE.AGENT_NAME}
+                type={TABLE_ROW_TYPE.CLIENT_NAME}
               />
             </td>
           );
@@ -99,6 +103,22 @@ const EmployeeTable = () => {
               <TableText
                 value={cell.row.original}
                 type={TABLE_ROW_TYPE.STATUS}
+              />
+            </td>
+          );
+        }
+
+        // Is deleted
+        if (cell.column.id === "isDeleted") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoProfile(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.CLIENT_ACCOUNT_DELETED}
               />
             </td>
           );

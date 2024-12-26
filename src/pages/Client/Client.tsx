@@ -87,7 +87,9 @@ const Client: FC<ClientProps> = () => {
               onClick={() => handleChangeTabParams(tab.key)}
               label={
                 <Badge
-                  badgeContent={4}
+                  badgeContent={
+                    tab?.notifications > 0 ? tab?.notifications : null
+                  }
                   color="error"
                   sx={{
                     "& .MuiBadge-badge": {

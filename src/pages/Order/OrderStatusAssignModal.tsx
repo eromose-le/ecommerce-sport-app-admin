@@ -65,8 +65,6 @@ export default function OrderStatusAssignModal({
     },
   });
 
-  console.log("FORMIK ::", formik.values);
-
   const iconSection = (
     <IconButton className="bg-[#eafff1] flex items-center justify-center">
       <Edit01
@@ -77,9 +75,22 @@ export default function OrderStatusAssignModal({
     </IconButton>
   );
 
+  const isCanceled = status === ORDER_STATUS.CANCELED;
+
   const isValid = !(formik.values.id === "" || updateOrderResult.isLoading);
 
-  const isDisableField = !updateOrderResult.isLoading;
+  const isDisableField = !(
+    updateOrderResult.isLoading ||
+    !isValid ||
+    isCanceled
+  );
+
+  const handleAssignStatus = () => {
+    if (isCanceled) {
+      return;
+    }
+    formik.handleSubmit();
+  };
 
   const contentSection = (
     <>
@@ -186,13 +197,13 @@ export default function OrderStatusAssignModal({
       </Button>
 
       <LoadingButton
-        disabled={!isValid}
+        disabled={!isValid || !isDisableField}
         loading={updateOrderResult.isLoading}
         className="capitalize font-bold font-inter text-base"
         fullWidth
         size="medium"
         variant="contained"
-        onClick={() => formik.handleSubmit()} // Submit form on click
+        onClick={handleAssignStatus} // Submit form on click
         type="button"
       >
         Assign

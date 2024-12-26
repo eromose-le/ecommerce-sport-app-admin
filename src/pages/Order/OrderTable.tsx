@@ -1,10 +1,6 @@
 import { flexRender, Row, HeaderGroup } from "@tanstack/react-table";
 import { Button, Popover, Tooltip, Typography } from "@mui/material";
-import {
-  DotsVertical,
-  ImageUser,
-  Share01,
-} from "@untitled-ui/icons-react";
+import { DotsVertical, ImageUser, Share01 } from "@untitled-ui/icons-react";
 import { useState, useEffect } from "react";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
 import ReusableTable from "@/common/Table/ReuseableTable";
@@ -43,14 +39,16 @@ const OrderTable = () => {
   };
 
   const columns: ColumnDef<any, any>[] = [
-    { accessorKey: "orderName", header: "Image" },
+    { accessorKey: "orderName", header: "Images" },
     { accessorKey: "orderProductName", header: "Name" },
     { accessorKey: "id", header: "Order ID" },
     { accessorKey: "total", header: "Total Price" },
     { accessorKey: "orderStatus", header: "Status" },
-    { accessorKey: "count", header: "Ordered Item" },
+    { accessorKey: "count", header: "Total no of Item in Cart" },
+    { accessorKey: "qty", header: "Total qty in Cart" },
     { accessorKey: "createdAt", header: "Created On" },
     { accessorKey: "updatedAt", header: "Last Updated On" },
+    { accessorKey: "isDeleted", header: "Order Deleted" },
     {
       accessorKey: "action",
       header: () => <></>, // Keep the header empty or customize it
@@ -156,6 +154,22 @@ const OrderTable = () => {
           );
         }
 
+        // Total Ordered Items Count
+        if (cell.column.id === "qty") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoOrder(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.ORDERED_ITEM_QTY_COUNT}
+              />
+            </td>
+          );
+        }
+
         // Created At
         if (cell.column.id === "createdAt") {
           return (
@@ -183,6 +197,22 @@ const OrderTable = () => {
               <TableText
                 value={cell.row.original}
                 type={TABLE_ROW_TYPE.UPDATED_AT_DATE}
+              />
+            </td>
+          );
+        }
+
+        // Is deleted
+        if (cell.column.id === "isDeleted") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoOrder(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.CLIENT_ACCOUNT_DELETED}
               />
             </td>
           );

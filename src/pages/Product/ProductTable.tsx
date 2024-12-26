@@ -50,6 +50,9 @@ const ProductTable = () => {
     { accessorKey: "stock", header: "In-Stock" },
     { accessorKey: "category", header: "Category" },
     { accessorKey: "subcategory", header: "Sub Category" },
+    { accessorKey: "createdAt", header: "Created On" },
+    { accessorKey: "updatedAt", header: "Last Updated On" },
+    { accessorKey: "isDeleted", header: "Product Deleted" },
     {
       accessorKey: "action",
       header: () => <></>, // Keep the header empty or customize it
@@ -243,6 +246,55 @@ const ProductTable = () => {
             </td>
           );
         }
+
+        // Created At
+        if (cell.column.id === "createdAt") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoProduct(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.CREATED_AT_DATE}
+              />
+            </td>
+          );
+        }
+
+        // Updated At
+        if (cell.column.id === "updatedAt") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoProduct(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.UPDATED_AT_DATE}
+              />
+            </td>
+          );
+        }
+
+        // Is deleted
+        if (cell.column.id === "isDeleted") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoProduct(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.CLIENT_ACCOUNT_DELETED}
+              />
+            </td>
+          );
+        }
+
         // Default
         return (
           <td

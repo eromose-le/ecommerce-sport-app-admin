@@ -24,8 +24,6 @@ const ProductDetail: FC<ProductDetailProps> = () => {
   );
   const productInfoResponse = getProductInfoQuery?.data?.data;
 
-  console.log("productInfoResponse ::", productInfoResponse);
-
   // const id = productInfoResponse?.id || "";
   const name = productInfoResponse?.name || "";
   const displayImage = productInfoResponse?.displayImage || "";

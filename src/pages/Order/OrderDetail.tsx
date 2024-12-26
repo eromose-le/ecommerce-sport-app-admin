@@ -8,6 +8,10 @@ import { useParams } from "react-router-dom";
 import SportygalaxyLoadingIndicator from "@/common/Loading/SportygalaxyLoadingIndicator";
 import OrderProductList from "./OrderProductList";
 import OrderStatus from "@/common/OrderStatus";
+import OrderStatusAssignModal from "./OrderStatusAssignModal";
+import WatermarkOverlay from "@/common/WatermarkOverlay";
+import { ORDER_STATUS } from "@/constants/enums";
+import OrderDeleteButton from "./OrderDeleteButton";
 
 interface OrderDetailProps {}
 const OrderDetail: FC<OrderDetailProps> = () => {
@@ -20,8 +24,6 @@ const OrderDetail: FC<OrderDetailProps> = () => {
   );
   const orderInfoResponse = getOrderInfoQuery?.data?.data;
 
-  // console.log("orderInfoResponse ::", orderInfoResponse);
-
   const user = orderInfoResponse?.user || "";
   const userName = `${user?.firstName || "N/A"} ${user?.lastName || "N/A"}`;
   const userEmail = user?.email || "";
@@ -31,8 +33,23 @@ const OrderDetail: FC<OrderDetailProps> = () => {
   const total = orderInfoResponse?.total || 0;
   const status = orderInfoResponse?.status || "";
 
+  const isDeleted = orderInfoResponse?.isDeleted ?? false;
+  const isCanceled =
+    orderInfoResponse?.status === ORDER_STATUS.CANCELED || false;
+  const isDisabled = isDeleted || isCanceled;
+
+  // Generate dynamic text based on the flags
+  const dynamicText = [
+    isDeleted ? "ORDER DELETED" : null,
+    isCanceled ? "ORDER CANCELED" : null,
+  ]
+    .filter(Boolean) // Remove null values
+    .join(" and "); // Combine the text dynamically
+
   return (
     <>
+      <WatermarkOverlay isVisible={isDisabled} text={dynamicText} />
+
       <div className="container-wrapper py-[30px]">
         <div className="flex items-center justify-between">
           <div>
@@ -112,6 +129,16 @@ const OrderDetail: FC<OrderDetailProps> = () => {
                   )}
                 </div>
               </div>
+            </div>
+
+            <div className="mt-10 flex items-center gap-4 space-x-3">
+              <OrderStatusAssignModal
+                id={id}
+                status={status}
+                buttonText="Update Order Status"
+              />
+
+              <OrderDeleteButton disable={isDisabled} orderId={id} />
             </div>
           </div>
         )}
