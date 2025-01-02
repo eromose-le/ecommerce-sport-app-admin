@@ -41,6 +41,7 @@ const OrderTable = () => {
   const columns: ColumnDef<any, any>[] = [
     { accessorKey: "orderName", header: "Images" },
     { accessorKey: "orderProductName", header: "Name" },
+    { accessorKey: "orderCustomerName", header: "User" },
     { accessorKey: "id", header: "Order ID" },
     { accessorKey: "total", header: "Total Price" },
     { accessorKey: "orderStatus", header: "Status" },
@@ -49,6 +50,7 @@ const OrderTable = () => {
     { accessorKey: "createdAt", header: "Created On" },
     { accessorKey: "updatedAt", header: "Last Updated On" },
     { accessorKey: "isDeleted", header: "Order Deleted" },
+    { accessorKey: "isOfflineOrder", header: "Offline Order" },
     {
       accessorKey: "action",
       header: () => <></>, // Keep the header empty or customize it
@@ -138,6 +140,22 @@ const OrderTable = () => {
       className="py-5 border-b-1 border-[#EAECF0] hover:bg-[#F3F4F7] cursor-pointer"
     >
       {row.getVisibleCells().map((cell) => {
+        // Ordered Customer Name
+        if (cell.column.id === "orderCustomerName") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoOrder(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.ORDER_CUSTOMER_NAME}
+              />
+            </td>
+          );
+        }
+
         // Ordered Item Count
         if (cell.column.id === "count") {
           return (
@@ -213,6 +231,22 @@ const OrderTable = () => {
               <TableText
                 value={cell.row.original}
                 type={TABLE_ROW_TYPE.CLIENT_ACCOUNT_DELETED}
+              />
+            </td>
+          );
+        }
+
+        // Is offline order
+        if (cell.column.id === "isOfflineOrder") {
+          return (
+            <td
+              key={cell.id}
+              onClick={() => handleGotoOrder(cell.row.original.id)}
+              className="py-4 p-6"
+            >
+              <TableText
+                value={cell.row.original}
+                type={TABLE_ROW_TYPE.OFFLINE_ORDER}
               />
             </td>
           );

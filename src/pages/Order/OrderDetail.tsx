@@ -1,7 +1,7 @@
 import { ApiOrderStoreSlice } from "@/api/ApiOrderStoreSlice";
 import BackButton from "@/common/BackButton";
 import { formatCurrency } from "@/utils/currencyUtils";
-import { Typography } from "@mui/material";
+import { Chip, Typography } from "@mui/material";
 import { FC } from "react";
 import { useParams } from "react-router-dom";
 
@@ -24,11 +24,12 @@ const OrderDetail: FC<OrderDetailProps> = () => {
   );
   const orderInfoResponse = getOrderInfoQuery?.data?.data;
 
-  const user = orderInfoResponse?.user || "";
+  const user = orderInfoResponse?.user || orderInfoResponse?.offlineUser || {};
+  const isOfflineUser = !!orderInfoResponse?.offlineUser;
   const userName = `${user?.firstName || "N/A"} ${user?.lastName || "N/A"}`;
-  const userEmail = user?.email || "";
-  const userAddress = user?.address || "";
-  const userPhone = user?.phone || "";
+  const userEmail = user?.email || "N/A";
+  const userAddress = user?.address || "N/A";
+  const userPhone = user?.phone || "N/A";
 
   const total = orderInfoResponse?.total || 0;
   const status = orderInfoResponse?.status || "";
@@ -45,6 +46,27 @@ const OrderDetail: FC<OrderDetailProps> = () => {
   ]
     .filter(Boolean) // Remove null values
     .join(" and "); // Combine the text dynamically
+
+  const userStatus = (): JSX.Element => {
+    return (
+      <>
+        {isOfflineUser ? (
+          <Chip
+            color="error"
+            className="text-xs font-inter font-medium"
+            icon={<span className="w-2 h-2 rounded-full bg-[#F04438]"></span>}
+            label="Offline Customer"
+          />
+        ) : (
+          <Chip
+            color="success"
+            icon={<span className="w-2 h-2 rounded-full bg-[#1BA879]"></span>}
+            label="Online Customer"
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <>
@@ -107,7 +129,7 @@ const OrderDetail: FC<OrderDetailProps> = () => {
 
               <div className="mt-8">
                 <p className="font-jost text-black text-mobile-2xl md:text-2xl font-bold">
-                  Delivery Information
+                  Delivery Information {userStatus()}
                 </p>
 
                 <div className="mt-2 space-y-6">

@@ -54,6 +54,27 @@ const TableText: FC<TableTextProps> = ({ type, value }) => {
     );
   }
 
+  if (type === TABLE_ROW_TYPE.OFFLINE_ORDER) {
+    return (
+      <>
+        {value?.offlineUser ? (
+          <Chip
+            color="error"
+            icon={<span className="w-2 h-2 rounded-full bg-[#F04438]"></span>}
+            label="Ofline"
+          />
+        ) : (
+          <Chip
+            color="success"
+            className="text-xs font-inter font-medium"
+            icon={<span className="w-2 h-2 rounded-full bg-[#1BA879]"></span>}
+            label="Online"
+          />
+        )}
+      </>
+    );
+  }
+
   if (type === TABLE_ROW_TYPE.PRODUCT_DESCRIPTION) {
     return (
       <Typography
@@ -176,6 +197,37 @@ const TableText: FC<TableTextProps> = ({ type, value }) => {
             )}
           </Typography>
         ))}
+      </>
+    );
+  }
+
+  const renderCustomerName = (user: any) => {
+    const firstName =
+      user?.user?.firstName || user?.offlineUser?.firstName || "";
+    const lastName = user?.user?.lastName || user?.offlineUser?.lastName || "";
+    const fullName = `${firstName} ${lastName}`.trim();
+
+    return (
+      <Typography
+        component="span"
+        color="grey.900"
+        className="font-crimson font-bold text-sm max-w-[200px] capitalize"
+      >
+        {fullName || "No Name Provided"}
+      </Typography>
+    );
+  };
+
+  if (type === TABLE_ROW_TYPE.ORDER_CUSTOMER_NAME) {
+    return (
+      <>
+        <Typography
+          component="span"
+          color="grey.900"
+          className="font-crimson font-bold text-sm max-w-[200px] capitalize"
+        >
+          {renderCustomerName(value)}
+        </Typography>
       </>
     );
   }
