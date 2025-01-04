@@ -1,13 +1,13 @@
 import { FC } from "react";
-import ProductTable from "./OrderTable";
+import OrderTable from "./OrderTable";
 
-interface ProductVerifiedProps {}
-const ProductVerified: FC<ProductVerifiedProps> = () => {
+interface OrderVerifiedProps {}
+const OrderVerified: FC<OrderVerifiedProps> = () => {
   return (
     <>
-      <ProductTable />
+      <OrderTable />
     </>
   );
 };
 
-export default ProductVerified;
+export default OrderVerified;

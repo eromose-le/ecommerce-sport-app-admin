@@ -19,3 +19,22 @@ export const getOrderStatusDetails = (status: string) => {
     formattedStatus: formattedStatus?.toUpperCase(),
   };
 };
+
+export const getTransactionStatusDetails = (status: string) => {
+  const statusColors: Record<string, string> = {
+    PENDING: "text-orange-500",
+    SUCCESS: "text-green-600",
+    FAILED: "text-red-500",
+  };
+
+  // Transform underscores to spaces and capitalize each word
+  const formattedStatus = status
+    ?.toLowerCase()
+    ?.replace(/_/g, " ")
+    ?.replace(/\b\w/g, (char) => char?.toUpperCase());
+
+  return {
+    colorClass: statusColors[status] || "text-gray-500",
+    formattedStatus: formattedStatus?.toUpperCase(),
+  };
+};

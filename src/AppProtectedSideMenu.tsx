@@ -12,6 +12,7 @@ import SportygalaxyLogo from "/sportygalaxy-logo.svg";
 import {
   ChevronUp,
   Container,
+  CreditCardShield,
   Home03,
   LogOut01,
   SearchLg,
@@ -55,6 +56,11 @@ const NORMAL_LINKS: LinkType[] = [
     title: "Orders",
     icon: <Container />,
     path: routeEnum.ORDERS,
+  },
+  {
+    title: "Transactions",
+    icon: <CreditCardShield />,
+    path: routeEnum.TRANSACTIONS,
   },
 ];
 

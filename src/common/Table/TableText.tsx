@@ -6,6 +6,7 @@ import { formatCurrency } from "@/utils/currencyUtils";
 import { transformDate } from "@/utils/dateUtils";
 import OrderStatus from "../OrderStatus";
 import { calculateCartTotals } from "@/pages/Order/order.helper";
+import TransactionStatus from "../TransactionStatus";
 
 interface TableTextProps {
   type: string;
@@ -57,7 +58,7 @@ const TableText: FC<TableTextProps> = ({ type, value }) => {
   if (type === TABLE_ROW_TYPE.OFFLINE_ORDER) {
     return (
       <>
-        {value?.offlineUser ? (
+        {!value?.user ? (
           <Chip
             color="error"
             icon={<span className="w-2 h-2 rounded-full bg-[#F04438]"></span>}
@@ -290,6 +291,29 @@ const TableText: FC<TableTextProps> = ({ type, value }) => {
           {calculateCartTotals(value?.items).totalItemQtyInAllCart || 0}
         </Typography>
       </div>
+    );
+  }
+
+  if (type === TABLE_ROW_TYPE.TRANSACTION_STATUS) {
+    return <TransactionStatus status={value?.status} />;
+  }
+
+  if (type === TABLE_ROW_TYPE.TRANSACTION_AMOUNT) {
+    return (
+      <Typography color="grey.900" className="font-inter font-medium text-sm">
+        {formatCurrency(value?.amount || 0)}
+      </Typography>
+    );
+  }
+
+  if (type === TABLE_ROW_TYPE.TRANSACTION_MEDIUM) {
+    return (
+      <Typography
+        color="grey.900"
+        className="font-inter font-medium capitalize text-sm"
+      >
+        {value?.paymentGateway?.name}
+      </Typography>
     );
   }
 

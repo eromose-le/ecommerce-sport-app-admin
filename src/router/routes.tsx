@@ -28,6 +28,8 @@ const EmployeeProfile = lazy(
   () => import("@/pages/EmployeeProfile/EmployeeProfile")
 );
 
+const Transaction = lazy(() => import("@/pages/Transaction/Transaction"));
+
 const AuthLogin = lazy(() => import("@/pages/Auth/AuthLogin"));
 
 type ExtendedRouteObject = RouteObject & {
@@ -121,6 +123,11 @@ export const ProtectedRoutes: ExtendedRouteObject[] = [
       {
         path: routeEnum.USERS_EMPLOYEE_DETAILS,
         element: <EmployeeProfile />,
+        errorElement: <ErrorBoundaryRoot />,
+      },
+      {
+        path: routeEnum.TRANSACTIONS,
+        element: <Transaction />,
         errorElement: <ErrorBoundaryRoot />,
       },
     ],

@@ -25,11 +25,16 @@ const OrderDetail: FC<OrderDetailProps> = () => {
   const orderInfoResponse = getOrderInfoQuery?.data?.data;
 
   const user = orderInfoResponse?.user || orderInfoResponse?.offlineUser || {};
-  const isOfflineUser = !!orderInfoResponse?.offlineUser;
+  const isOfflineUser = !orderInfoResponse?.user;
+  const isHasExtraInfo =
+    orderInfoResponse?.user && orderInfoResponse?.offlineUser;
   const userName = `${user?.firstName || "N/A"} ${user?.lastName || "N/A"}`;
   const userEmail = user?.email || "N/A";
   const userAddress = user?.address || "N/A";
   const userPhone = user?.phone || "N/A";
+
+  const offlineUserAddress = orderInfoResponse?.offlineUser?.address || "N/A";
+  const offlineUserPhone = orderInfoResponse?.offlineUser?.phone || "N/A";
 
   const total = orderInfoResponse?.total || 0;
   const status = orderInfoResponse?.status || "";
@@ -66,7 +71,7 @@ const OrderDetail: FC<OrderDetailProps> = () => {
         )}
       </>
     );
-  }
+  };
 
   return (
     <>
@@ -146,6 +151,25 @@ const OrderDetail: FC<OrderDetailProps> = () => {
                       </p>
                       <p className="flex items-center gap-2 font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
                         Phone Number: {userPhone}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <p className="font-jost text-black text-mobile-2xl md:text-2xl font-bold">
+                  Additional Information
+                </p>
+
+                <div className="mt-2 space-y-6">
+                  {isHasExtraInfo && (
+                    <div className="space-y-3">
+                      <p className="flex items-center gap-2 font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
+                        Address: {offlineUserAddress}
+                      </p>
+                      <p className="flex items-center gap-2 font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
+                        Phone Number: {offlineUserPhone}
                       </p>
                     </div>
                   )}
