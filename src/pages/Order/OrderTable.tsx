@@ -45,12 +45,13 @@ const OrderTable = () => {
     { accessorKey: "id", header: "Order ID" },
     { accessorKey: "total", header: "Total Price" },
     { accessorKey: "orderStatus", header: "Status" },
+    { accessorKey: "paymentOption", header: "Payment Option" },
     { accessorKey: "count", header: "Total no of Item in Cart" },
     { accessorKey: "qty", header: "Total qty in Cart" },
     { accessorKey: "createdAt", header: "Created On" },
     { accessorKey: "updatedAt", header: "Last Updated On" },
     { accessorKey: "isDeleted", header: "Order Deleted" },
-    { accessorKey: "isOfflineOrder", header: "Offline Order" },
+    { accessorKey: "isOfflineOrder", header: "Order mood" },
     {
       accessorKey: "action",
       header: () => <></>, // Keep the header empty or customize it

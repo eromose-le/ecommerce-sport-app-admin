@@ -11,6 +11,8 @@ import ProductDynamicKeyValuePairTable from "./components/ProductDynamicKeyValue
 import { routeEnum } from "@/constants/RouteConstants";
 import ProductDeleteButton from "./components/ProductDeleteButton";
 import WatermarkOverlay from "@/common/WatermarkOverlay";
+import LoadingContent from "@/common/LoadingContent/LoadingContent";
+import { objectToArray } from "@/utils/ObjectUtils";
 
 interface ProductDetailProps {}
 const ProductDetail: FC<ProductDetailProps> = () => {
@@ -80,9 +82,15 @@ const ProductDetail: FC<ProductDetailProps> = () => {
           </Typography>
         </div>
 
-        {getProductInfoQuery.isLoading ? (
-          <SportygalaxyLoadingIndicator />
-        ) : (
+        <LoadingContent
+          loading={getProductInfoQuery.isLoading}
+          error={getProductInfoQuery.isError}
+          onReload={getProductInfoQuery.refetch}
+          loadingContent={<SportygalaxyLoadingIndicator />}
+          // errorContent={<TableError onReload={() => refetch()} />}
+          // emptyContent={</>}
+          data={objectToArray(productInfoResponse)}
+        >
           <div className="mt-10 space-y-10">
             <ProductImageViewer
               displayImage={displayImage}
@@ -219,7 +227,7 @@ const ProductDetail: FC<ProductDetailProps> = () => {
               <ProductDeleteButton disable={!isDisabled} productId={id} />
             </div>
           </div>
-        )}
+        </LoadingContent>
       </div>
     </>
   );

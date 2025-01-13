@@ -12,6 +12,8 @@ import OrderStatusAssignModal from "./OrderStatusAssignModal";
 import WatermarkOverlay from "@/common/WatermarkOverlay";
 import { ORDER_STATUS } from "@/constants/enums";
 import OrderDeleteButton from "./OrderDeleteButton";
+import LoadingContent from "@/common/LoadingContent/LoadingContent";
+import { objectToArray } from "@/utils/ObjectUtils";
 
 interface OrderDetailProps {}
 const OrderDetail: FC<OrderDetailProps> = () => {
@@ -37,7 +39,9 @@ const OrderDetail: FC<OrderDetailProps> = () => {
   const offlineUserPhone = orderInfoResponse?.offlineUser?.phone || "N/A";
 
   const total = orderInfoResponse?.total || 0;
+  const amountToPay = orderInfoResponse?.amountToPay || 0;
   const status = orderInfoResponse?.status || "";
+  const paymentOption = orderInfoResponse?.paymentOption || "";
 
   const isDeleted = orderInfoResponse?.isDeleted ?? false;
   const isCanceled =
@@ -93,9 +97,15 @@ const OrderDetail: FC<OrderDetailProps> = () => {
           </Typography>
         </div>
 
-        {getOrderInfoQuery.isLoading ? (
-          <SportygalaxyLoadingIndicator />
-        ) : (
+        <LoadingContent
+          loading={getOrderInfoQuery.isLoading}
+          error={getOrderInfoQuery.isError}
+          onReload={getOrderInfoQuery.refetch}
+          loadingContent={<SportygalaxyLoadingIndicator />}
+          // errorContent={<TableError onReload={() => refetch()} />}
+          // emptyContent={</>}
+          data={objectToArray(orderInfoResponse)}
+        >
           <div className="mt-10 space-y-10">
             <OrderProductList items={orderInfoResponse?.items} />
 
@@ -118,17 +128,38 @@ const OrderDetail: FC<OrderDetailProps> = () => {
 
               <div className="mt-8">
                 <p className="font-jost text-black text-mobile-2xl md:text-2xl font-bold">
-                  Cost
+                  Payments
                 </p>
 
                 <div className="mt-2 space-y-6">
-                  {total && (
-                    <div className="space-y-3">
-                      <p className="flex items-center gap-2 font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
-                        Total: {formatCurrency(total || 0)}
-                      </p>
-                    </div>
-                  )}
+                  <div className="space-y-3">
+                    <p className="flex items-center gap-2 font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
+                      Option: {paymentOption}
+                    </p>
+
+                    <p className="flex items-center gap-2 font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
+                      Total Cost: {formatCurrency(total || 0)}
+                    </p>
+
+                    {paymentOption === "FULL" ? (
+                      <>
+                        <p className="flex items-center gap-2 font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
+                          Amount Paid: {formatCurrency(total || 0)}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="flex items-center gap-2 font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
+                          Amount Paid:{" "}
+                          {formatCurrency(total - amountToPay) || 0}
+                        </p>
+                      </>
+                    )}
+
+                    <p className="flex items-center gap-2 font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
+                      Amount Remaining: {formatCurrency(amountToPay) || 0}
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -187,7 +218,7 @@ const OrderDetail: FC<OrderDetailProps> = () => {
               <OrderDeleteButton disable={isDisabled} orderId={id} />
             </div>
           </div>
-        )}
+        </LoadingContent>
       </div>
     </>
   );
