@@ -72,20 +72,20 @@ const validationSchema = Yup.object({
   description: Yup.string().required("Description is required"),
   price: Yup.number().optional().positive("Price must be positive"),
   stock: Yup.number().optional().integer("Stock must be an integer"),
-  categoryId: Yup.string().required("Category is required"),
-  subcategoryId: Yup.string().required("Subcategory is required"),
+  categoryId: Yup.string().required("Category is required").optional(),
+  subcategoryId: Yup.string().required("Subcategory is required").optional(),
   sizeIds: Yup.array().min(1, "Select at least one size"),
   colorIds: Yup.array().min(1, "Select at least one color"),
   specification: Yup.array().of(
     Yup.object().shape({
-      key: Yup.string().required("Key is required"),
-      value: Yup.string().required("Value is required"),
+      key: Yup.string().required("Key is required").optional(),
+      value: Yup.string().required("Value is required").optional(),
     })
   ),
   keyattribute: Yup.array().of(
     Yup.object().shape({
-      key: Yup.string().required("Key is required"),
-      value: Yup.string().required("Value is required"),
+      key: Yup.string().required("Key is required").optional(),
+      value: Yup.string().required("Value is required").optional(),
     })
   ),
 });
