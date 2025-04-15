@@ -129,10 +129,10 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
         );
 
         // Pull existing `completeVideo` if it exists
-        const existingCompleteVideo =
-          videoIndex !== -1
-            ? formik.values.completeVideo // currentMedias[videoIndex]?.completeVideo
-            : undefined;
+        // const existingCompleteVideo =
+        //   videoIndex !== -1
+        //     ? formik.values.completeVideo // currentMedias[videoIndex]?.completeVideo
+        //     : undefined;
 
         const updatedVideoMedia = {
           ...newResult,
