@@ -139,7 +139,7 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
           type: "video", // force override MIME type with 'video'
           links: {
             ...newResult.links,
-            ...(existingCompleteVideo && {
+            ...(formik.values.completeVideo && {
               completeVideo: formik.values.completeVideo,
             }),
           },
