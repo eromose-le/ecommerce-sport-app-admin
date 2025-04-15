@@ -342,6 +342,8 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
     return <SportygalaxyLoadingIndicator />;
   }
 
+  console.log("formik", formik.values);
+
   return (
     <div className="container-wrapper py-[30px] h-[calc(100vh-118.5px)]">
       <div className="flex items-center justify-between">

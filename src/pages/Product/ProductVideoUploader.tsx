@@ -140,7 +140,7 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
           links: {
             ...newResult.links,
             ...(existingCompleteVideo && {
-              completeVideo: existingCompleteVideo,
+              completeVideo: formik.values.completeVideo,
             }),
           },
         };
