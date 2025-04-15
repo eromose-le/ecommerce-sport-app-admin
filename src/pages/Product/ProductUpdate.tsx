@@ -8,6 +8,7 @@ import {
   Checkbox,
   ListItemText,
   Typography,
+  Button,
 } from "@mui/material";
 import * as Yup from "yup";
 import { ApiColorStoreSlice } from "@/api/ApiColorStoreSlice";
@@ -347,6 +348,23 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
         <div>
           <BackButton />
         </div>
+      </div>
+
+      <div className="flex items-center justify-center my-6">
+        <Button
+          size="small"
+          variant="contained-error"
+          className="capitalize"
+          onClick={() => {
+            formik.setFieldValue("medias", []);
+            formik.setFieldValue("displayImage", "");
+            formik.setFieldValue("completeVideo", "");
+
+            showSuccessSnackbar("Reset Successful");
+          }}
+        >
+          Reset Media Files
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -90,47 +90,55 @@ const ProductImageUploader: FC<ProductImageUploaderProps> = ({ formik }) => {
       return;
     }
 
-    console.log("Selected file MIME type:", files[0]?.type);
-
-    // Optional file validation
-    const isValidFile = Array.from(files).every((file) => {
-      const validFileType = uploadConfig.allowedFileTypes.includes(file.type);
-      const validFileSize =
-        file.size <= convertSizeToBytes(uploadConfig.maxFileSize); // Use size in bytes
-
-      setIsUploading(false);
-      return validFileType && validFileSize;
+    const isValidFile = files.every((file) => {
+      const validType = uploadConfig.allowedFileTypes.includes(file.type);
+      const validSize =
+        file.size <= convertSizeToBytes(uploadConfig.maxFileSize);
+      return validType && validSize;
     });
 
     if (!isValidFile) {
-      console.log(`Invalid file. Ensure file type and size are correct.`);
-      showErrorSnackbar(`Invalid file. Ensure file type and size are correct.`);
+      showErrorSnackbar("Invalid file. Check type and size.");
       setIsUploading(false);
       return;
     }
 
     try {
-      setIsUploading(true);
-      // Use the uploadFiles helper to upload the files
-      const result = await uploadFiles(UPLOAD_FORMATS.IMAGE, {
-        files: Array.from(files),
-      });
+      const result = await uploadFiles(UPLOAD_FORMATS.IMAGE, { files });
 
-      if (result.length >= 1) {
-        let newResult = extractImageAppUrlsAndFileType(result as FileObject[]);
-        formik.setFieldValue("medias", [...formik.values.medias, newResult]);
-        showSuccessSnackbar("Upload completed");
-        setIsUploading(false);
-        setIsUploaded(false);
+      const newImageData = extractImageAppUrlsAndFileType(
+        result as FileObject[]
+      ); // includes type: "image", images, displayImage
+
+      const medias = formik.values.medias ?? [];
+
+      const imageMediaIndex = medias.findIndex(
+        (media: any) => media.type === "image"
+      );
+
+      let updatedMedias: any = [...medias];
+
+      if (imageMediaIndex !== -1) {
+        // Replace existing image media object, preserving other media
+        updatedMedias[imageMediaIndex] = {
+          ...updatedMedias[imageMediaIndex],
+          type: "image", // force override MIME type with 'image'
+          images: newImageData.images,
+          // displayImage: newImageData?.displayImage ?? "",
+        };
       } else {
-        setIsUploading(false);
-        showErrorSnackbar("Upload failed. Please try again.");
-        console.log("Upload failed. Please try again.");
+        // Append new image media object
+        updatedMedias.push({ ...newImageData, type: "image" });
       }
+
+      formik.setFieldValue("medias", updatedMedias);
+      setIsUploaded(true);
+      showSuccessSnackbar("Upload completed");
     } catch (error) {
+      showErrorSnackbar(`Upload error: ${error}`);
+      console.error(error);
+    } finally {
       setIsUploading(false);
-      showErrorSnackbar(`Error uploading file: ${error}`);
-      console.log(`Error uploading file: ${error}`);
     }
   };
 
@@ -209,29 +217,36 @@ const ProductImageUploader: FC<ProductImageUploaderProps> = ({ formik }) => {
                       type="button"
                       className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2 py-1"
                       onClick={() => {
-                        // Remove the selected file and preview
-                        const newFiles = files.filter((_, i) => i !== index);
-                        const newPreviews = previews.filter(
-                          (_, i) => i !== index
+                        const medias = formik.values.medias ?? [];
+
+                        const imageMediaIndex = medias.findIndex(
+                          (media: any) => media.type === "image"
+                        );
+                        if (imageMediaIndex === -1) return;
+
+                        const updatedMedias = [...medias];
+                        const targetImageMedia = updatedMedias[imageMediaIndex];
+
+                        const updatedImages = targetImageMedia.images.filter(
+                          (_: any, i: any) => i !== index
                         );
 
-                        // Update Formik's medias field
-                        const updatedMedias =
-                          formik.values.medias[0]?.images.filter(
-                            (_: any, i: any) => i !== index
-                          );
+                        updatedMedias[imageMediaIndex] = {
+                          ...targetImageMedia,
+                          images: updatedImages,
+                          // Optional: Update displayImage fallback
+                          displayImage:
+                            targetImageMedia.displayImage ===
+                            targetImageMedia.images[index]
+                              ? updatedImages[0] ?? ""
+                              : targetImageMedia.displayImage,
+                        };
 
-                        setFiles(newFiles);
-                        setPreviews(newPreviews);
-                        formik.setFieldValue(
-                          "medias",
-                          formik.values.medias.map(
-                            (media: any, mediaIndex: any) =>
-                              mediaIndex === 0 && media.type === "image"
-                                ? { ...media, images: updatedMedias }
-                                : media
-                          )
+                        formik.setFieldValue("medias", updatedMedias);
+                        setPreviews((prev) =>
+                          prev.filter((_, i) => i !== index)
                         );
+                        setFiles((prev) => prev.filter((_, i) => i !== index));
                       }}
                     >
                       X

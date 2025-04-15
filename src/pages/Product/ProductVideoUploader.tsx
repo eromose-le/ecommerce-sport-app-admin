@@ -119,8 +119,40 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
       });
 
       if (result.length >= 1) {
-        let newResult = extractVideoAppUrlsAndFileType(result[0] as FileObject);
-        formik.setFieldValue("medias", [...formik.values.medias, newResult]);
+        const newResult = extractVideoAppUrlsAndFileType(
+          result[0] as FileObject
+        );
+
+        const currentMedias = [...formik.values.medias];
+        const videoIndex = currentMedias.findIndex(
+          (media) => media.type === "video"
+        );
+
+        // Pull existing `completeVideo` if it exists
+        const existingCompleteVideo =
+          videoIndex !== -1
+            ? formik.values.completeVideo // currentMedias[videoIndex]?.completeVideo
+            : undefined;
+
+        const updatedVideoMedia = {
+          ...newResult,
+          type: "video", // force override MIME type with 'video'
+          links: {
+            ...newResult.links,
+            ...(existingCompleteVideo && {
+              completeVideo: existingCompleteVideo,
+            }),
+          },
+        };
+
+        if (videoIndex !== -1) {
+          currentMedias[videoIndex] = updatedVideoMedia;
+        } else {
+          currentMedias.push({ ...updatedVideoMedia, type: "video" });
+        }
+
+        formik.setFieldValue("medias", currentMedias);
+
         showSuccessSnackbar("Upload completed");
         setIsUploading(false);
         setIsUploaded(false);
@@ -225,6 +257,31 @@ const ProductVideoUploader: FC<ProductVideoUploaderProps> = ({ formik }) => {
                         );
                         setFiles(newFiles);
                         setPreviews(newPreviews);
+
+                        // Find the video object in formik.values.medias
+                        const videoIndex = formik.values.medias.findIndex(
+                          (media: any) => media.type === "video"
+                        );
+
+                        if (videoIndex !== -1) {
+                          const currentVideo = formik.values.medias[videoIndex];
+
+                          // Create a new object with introVideo cleared
+                          const updatedVideo = {
+                            ...currentVideo,
+                            links: {
+                              ...currentVideo.links,
+                              introVideo: undefined, // or null, if your schema prefers that
+                              completeVideo: undefined,
+                            },
+                          };
+
+                          // Mutate just that media index in the array
+                          const updatedMedias = [...formik.values.medias];
+                          updatedMedias[videoIndex] = updatedVideo;
+
+                          formik.setFieldValue("medias", updatedMedias);
+                        }
                       }}
                     >
                       X

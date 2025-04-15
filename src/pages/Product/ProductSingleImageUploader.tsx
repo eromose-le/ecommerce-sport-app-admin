@@ -83,7 +83,6 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
     setIsUploading(true);
     setIsUploaded(false);
 
-    console.log("files ::", files);
     if (!files || files.length < 1) {
       setIsUploading(false);
       showErrorSnackbar("Please select at least one file.");
@@ -116,10 +115,8 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
         files: Array.from(files),
       });
 
-      console.log("result ::", result);
-
       if (result.length >= 1) {
-        let displayImage = result[0]?.appUrl as string;
+        const displayImage = result[0]?.appUrl as string;
         formik.setFieldValue("displayImage", displayImage);
         showSuccessSnackbar("Upload completed");
         setIsUploading(false);
@@ -215,6 +212,8 @@ const ProductSingleImageUploader: FC<ProductSingleImageUploaderProps> = ({
                         const newPreviews = previews.filter(
                           (_, i) => i !== index
                         );
+
+                        formik.setFieldValue("displayImage", "");
                         setFiles(newFiles);
                         setPreviews(newPreviews);
                       }}

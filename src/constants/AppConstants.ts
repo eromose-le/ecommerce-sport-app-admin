@@ -30,6 +30,7 @@ export const uploadConfig = {
   allowedVideoFileTypes: [
     // Video MIME types
     "video/mp4",
+    "video/mov",
     "video/mpeg",
     "video/x-msvideo", // .avi
     "video/quicktime", // .mov
