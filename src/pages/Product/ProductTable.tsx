@@ -319,6 +319,7 @@ const ProductTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const productStatus = query.get("tab") || "";
+  const pageIndexFromUrl = query.get("page") || pageIndex;
 
   // State for filters
   const [isDeleted, setIsDeleted] = useState<boolean | undefined>(false);
@@ -368,7 +369,7 @@ const ProductTable = () => {
     sorting: SortingState,
     globalFilter: string
   ) => {
-    setPageIndex(pageIndex);
+    setPageIndex(Number(pageIndexFromUrl) || pageIndex);
     setPageSize(pageSize);
     setSorting(sorting);
     setGlobalFilter(globalFilter);
@@ -378,7 +379,7 @@ const ProductTable = () => {
 
   useEffect(() => {
     fetchData(pageIndex, pageSize, sorting, globalFilter);
-  }, [pageIndex, pageSize, sorting, globalFilter, isDeleted, isRequestDelete]);
+  }, [pageIndex, pageSize, sorting, globalFilter, isDeleted, isRequestDelete,pageIndexFromUrl]);
 
   if (isError) {
     showErrorSnackbar(error?.message || "Error occured");

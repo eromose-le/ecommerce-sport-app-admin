@@ -1,3 +1,4 @@
+import { useAppendQueryParams } from "@/hooks/useAppendQueryParams";
 import {
   Button,
   Divider,
@@ -15,6 +16,7 @@ export const Pagination: FC<{
   table: ReturnType<typeof useReactTable>;
   setPageSize: (size: number) => void;
 }> = ({ table, setPageSize }) => {
+  const { appendParams, clearParams } = useAppendQueryParams();
   return (
     <>
       <div className="mt-8">
@@ -25,7 +27,18 @@ export const Pagination: FC<{
             startIcon={<ArrowLeft width={20} height={20} />}
             className="capitalize font-bold font-inter"
             size="small"
-            onClick={() => table.previousPage()}
+            onClick={() => {
+              table.previousPage();
+              if (table.getState().pagination.pageIndex - 1 === 0) {
+                clearParams();
+                window.location.reload();
+                return;
+              } else {
+                appendParams({
+                  page: table.getState().pagination.pageIndex - 1,
+                });
+              }
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             Previous
@@ -65,7 +78,10 @@ export const Pagination: FC<{
             endIcon={<ArrowRight width={20} height={20} />}
             className="capitalize font-bold font-inter"
             size="small"
-            onClick={() => table.nextPage()}
+            onClick={() => {
+              table.nextPage();
+              appendParams({ page: table.getState().pagination.pageIndex + 1 });
+            }}
             disabled={!table.getCanNextPage()}
           >
             Next
