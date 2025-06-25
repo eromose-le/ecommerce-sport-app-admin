@@ -28,7 +28,6 @@ import {
   TextFieldError,
   TextFieldEmpty,
 } from "@/common/TextFieldStateComponents/TextFieldStateComponents";
-import { routeEnum } from "@/constants/RouteConstants";
 import SportygalaxyLoadingIndicator from "@/common/Loading/SportygalaxyLoadingIndicator";
 import { ProductColor, ProductSize } from "@/types/product";
 import BackButton from "@/common/BackButton";
