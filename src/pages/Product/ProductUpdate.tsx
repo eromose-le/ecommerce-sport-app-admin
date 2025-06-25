@@ -284,7 +284,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
         }).unwrap();
 
         showSuccessSnackbar(data?.message || "Successful");
-        navigate(routeEnum.PRODUCTS);
+        navigate(-2);
       } catch (error: any) {
         showErrorSnackbar(error?.data?.error || "Error occured");
       }
@@ -341,8 +341,6 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
   if (isLoading) {
     return <SportygalaxyLoadingIndicator />;
   }
-
-  console.log("formik", formik.values);
 
   return (
     <div className="container-wrapper py-[30px] h-[calc(100vh-118.5px)]">
