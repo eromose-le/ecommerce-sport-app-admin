@@ -46,6 +46,7 @@ const ProductTable = () => {
     // { accessorKey: "id", header: "Product ID" },
     { accessorKey: "name", header: "Product's Name" },
     { accessorKey: "description", header: "Description" },
+    { accessorKey: "modelNumber", header: "Model Number" },
     { accessorKey: "price", header: "Cost" },
     { accessorKey: "stock", header: "In-Stock" },
     { accessorKey: "category", header: "Category" },

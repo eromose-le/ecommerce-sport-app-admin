@@ -17,6 +17,7 @@ const OrderProductList = ({ items }: { items: any }) => {
           const displayImage = product?.displayImage || "";
           const name = product?.name || "Unnamed Product";
           const productId = product?.id || "";
+          const productModelNumber = product?.modelNumber || "";
 
           const gotoDetailedProduct = () => {
             const route = generatePath(routeEnum.PRODUCT_DETAILS, {
@@ -44,6 +45,9 @@ const OrderProductList = ({ items }: { items: any }) => {
                     className="font-crimson text-black text-mobile-xl md:text-xl font-bold leading-normal tracking-wide"
                   >
                     {name}
+                  </Typography>
+                  <Typography className="font-jost text-black text-mobile-xl md:text-lg font-light leading-normal tracking-wide">
+                    Model Number: {productModelNumber}
                   </Typography>
                   <Typography className="font-jost text-black text-mobile-xl md:text-lg font-light leading-normal tracking-wide">
                     Price: {formatCurrency(price || 0)}

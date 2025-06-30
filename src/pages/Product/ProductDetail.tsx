@@ -31,6 +31,7 @@ const ProductDetail: FC<ProductDetailProps> = () => {
   const displayImage = productInfoResponse?.displayImage || "";
   const description = productInfoResponse?.description || "";
   const price = productInfoResponse?.price || "";
+  const modelNumber = productInfoResponse?.modelNumber || "";
   const stock = productInfoResponse?.stock || 0;
   const category = productInfoResponse?.category?.name || "";
   const subcategory = productInfoResponse?.subcategory?.name || "";
@@ -78,7 +79,7 @@ const ProductDetail: FC<ProductDetailProps> = () => {
             color="grey.900"
             className="font-bold text-4xl font-crimson"
           >
-            Product Details
+            Product Details - ({modelNumber})
           </Typography>
         </div>
 
@@ -113,6 +114,16 @@ const ProductDetail: FC<ProductDetailProps> = () => {
                   Groups
                 </p>
 
+                <div className="mt-2 space-y-6">
+                  {modelNumber && (
+                    <div className="space-y-3">
+                      <p className="font-jost text-black text-mobile-xl md:text-xl font-light leading-normal tracking-wide">
+                        Model Number:{" "}
+                        <span className="font-semibold">{modelNumber}</span>
+                      </p>
+                    </div>
+                  )}
+                </div>
                 <div className="mt-2 space-y-6">
                   {category && (
                     <div className="space-y-3">
