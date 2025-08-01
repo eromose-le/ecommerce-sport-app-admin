@@ -39,14 +39,14 @@ export const ApiProductStoreSlice = sportygalaxyAdminApi.injectEndpoints({
         // console.log("params", params.toString());
 
         return {
-          url: `/products?${params.toString()}`,
+          url: `/admin-products?${params.toString()}`,
         };
       },
       providesTags: [RtkqTagEnum.PRODUCTS],
     }),
     getProductInfo: builder.query<any, any>({
       query: ({ id }: any) => ({
-        url: `/products/${id}`,
+        url: `/admin-products/${id}`,
         method: "GET",
       }),
       providesTags: [RtkqTagEnum.PRODUCTS],
@@ -67,11 +67,19 @@ export const ApiProductStoreSlice = sportygalaxyAdminApi.injectEndpoints({
       }),
       invalidatesTags: [RtkqTagEnum.PRODUCTS],
     }),
-    deleteProduct: builder.mutation<any, any>({
+    deactivateProduct: builder.mutation<any, any>({
       query: ({ id, ...data }: any) => ({
-        url: `/products/${id}`,
+        url: `/admin-products/${id}/de-activate`,
         data,
-        method: "DELETE",
+        method: "PUT",
+      }),
+      invalidatesTags: [RtkqTagEnum.PRODUCTS],
+    }),
+    reactivateProduct: builder.mutation<any, any>({
+      query: ({ id, ...data }: any) => ({
+        url: `/admin-products/${id}/re-activate`,
+        data,
+        method: "PUT",
       }),
       invalidatesTags: [RtkqTagEnum.PRODUCTS],
     }),

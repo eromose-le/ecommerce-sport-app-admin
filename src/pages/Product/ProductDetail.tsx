@@ -9,10 +9,11 @@ import ProductImageViewer from "./components/ProductImageViewer";
 import SportygalaxyLoadingIndicator from "@/common/Loading/SportygalaxyLoadingIndicator";
 import ProductDynamicKeyValuePairTable from "./components/ProductDynamicKeyValuePairTable";
 import { routeEnum } from "@/constants/RouteConstants";
-import ProductDeleteButton from "./components/ProductDeleteButton";
+import ProductDeactivateButton from "./components/ProductDeactivateButton";
 import WatermarkOverlay from "@/common/WatermarkOverlay";
 import LoadingContent from "@/common/LoadingContent/LoadingContent";
 import { objectToArray } from "@/utils/ObjectUtils";
+import ProductReactivateButton from "./components/ProductReactivateButton";
 
 interface ProductDetailProps {}
 const ProductDetail: FC<ProductDetailProps> = () => {
@@ -65,7 +66,7 @@ const ProductDetail: FC<ProductDetailProps> = () => {
 
   return (
     <>
-      <WatermarkOverlay isVisible={isDeleted} text="Product Deleted" />
+      <WatermarkOverlay isVisible={isDeleted} text="Product Deactivated" />
 
       <div className="container-wrapper py-[30px]">
         <div className="flex items-center justify-between">
@@ -224,18 +225,27 @@ const ProductDetail: FC<ProductDetailProps> = () => {
             />
 
             <div className="mt-10 space-x-3">
-              <Button
-                disabled={!isDisabled}
-                onClick={handleGotoUpdateProduct}
-                startIcon={<Edit01 width={20} height={20} />}
-                className="capitalize font-semibold text-base font-inter md:px-10"
-                variant="ghost"
-                size="medium"
-              >
-                Edit
-              </Button>
+              {isDeleted ? (
+                <ProductReactivateButton disable={!isDisabled} productId={id} />
+              ) : (
+                <>
+                  <Button
+                    disabled={!isDisabled}
+                    onClick={handleGotoUpdateProduct}
+                    startIcon={<Edit01 width={20} height={20} />}
+                    className="capitalize font-semibold text-base font-inter md:px-10"
+                    variant="ghost"
+                    size="medium"
+                  >
+                    Edit
+                  </Button>
 
-              <ProductDeleteButton disable={!isDisabled} productId={id} />
+                  <ProductDeactivateButton
+                    disable={!isDisabled}
+                    productId={id}
+                  />
+                </>
+              )}
             </div>
           </div>
         </LoadingContent>

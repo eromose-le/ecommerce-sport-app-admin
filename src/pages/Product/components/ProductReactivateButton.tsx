@@ -3,24 +3,24 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import useExtendedSnackbar from "@/hooks/useExtendedSnackbar";
 import { LoadingButton } from "@mui/lab";
-import { X } from "@untitled-ui/icons-react";
+import { CheckDone01 } from "@untitled-ui/icons-react";
 import { ApiProductStoreSlice } from "@/api/ApiProductStoreSlice";
 import { useConfirmDialog } from "@/hooks/useConfirmDialog";
 
 const validationSchema = Yup.object({});
 
-interface ProductDeleteButtonProps {
+interface ProductReactivateButtonProps {
   productId: string;
   disable?: boolean;
 }
-const ProductDeleteButton: FC<ProductDeleteButtonProps> = ({
+const ProductReactivateButton: FC<ProductReactivateButtonProps> = ({
   productId,
   disable,
 }) => {
   const confirm = useConfirmDialog();
   const { showSuccessSnackbar, showErrorSnackbar } = useExtendedSnackbar();
-  const [deleteProduct, deleteProductResult] =
-    ApiProductStoreSlice.useDeleteProductMutation();
+  const [reactivateProduct, reactivateProductResult] =
+    ApiProductStoreSlice.useReactivateProductMutation();
 
   const formik = useFormik({
     initialValues: {},
@@ -31,7 +31,10 @@ const ProductDeleteButton: FC<ProductDeleteButtonProps> = ({
           id: productId || "",
         };
 
-        const data = await deleteProduct(payload).unwrap();
+        const data = await reactivateProduct({
+          isDelete: false,
+          ...payload,
+        }).unwrap();
         showSuccessSnackbar(data?.message || "Successful");
       } catch (error: any) {
         showErrorSnackbar(error?.data?.message || "Error occured");
@@ -42,15 +45,14 @@ const ProductDeleteButton: FC<ProductDeleteButtonProps> = ({
   const handleReject = () => {
     confirm({
       title: "Are you sure?",
-      description:
-        "You are trying to delete this product, this action is irreversable",
+      description: "You are trying to reactivate this product",
       onConfirm: () => {
         formik.handleSubmit();
       },
       dialogProps: {
         maxWidth: "xs",
       },
-      confirmButtonProps: { color: "error", variant: "contained-error" },
+      confirmButtonProps: { color: "success", variant: "contained" },
     });
   };
 
@@ -58,16 +60,16 @@ const ProductDeleteButton: FC<ProductDeleteButtonProps> = ({
 
   return (
     <LoadingButton
-      disabled={disable || isDisableBtn}
+      disabled={!disable || isDisableBtn}
       className="capitalize font-semibold text-base font-inter md:px-10"
-      variant="contained-error"
-      loading={deleteProductResult.isLoading}
-      startIcon={<X width={18} height={18} />}
+      variant="contained"
+      loading={reactivateProductResult.isLoading}
+      startIcon={<CheckDone01 width={18} height={18} />}
       onClick={() => handleReject()}
     >
-      Delete
+      Re-activate
     </LoadingButton>
   );
 };
 
-export default ProductDeleteButton;
+export default ProductReactivateButton;
