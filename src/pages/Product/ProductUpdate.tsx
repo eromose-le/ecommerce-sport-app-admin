@@ -71,6 +71,9 @@ const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
   price: Yup.number().optional().positive("Price must be positive"),
+  salesPrice: Yup.number()
+    .optional()
+    .min(0, "Sales Price must be greater than or equal to 0"),
   stock: Yup.number().optional().integer("Stock must be an integer"),
   categoryId: Yup.string().required("Category is required").optional(),
   subcategoryId: Yup.string().required("Subcategory is required").optional(),
@@ -173,6 +176,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
       name: productInfoResponse?.name || "",
       description: productInfoResponse?.description || "",
       price: productInfoResponse?.price || "",
+      salesPrice: productInfoResponse?.salesPrice || "",
       stock: 0,
       categoryId: productInfoResponse?.categoryId || "",
       subcategoryId: productInfoResponse?.subcategoryId || "",
@@ -212,6 +216,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
             "name",
             "description",
             "price",
+            "salesPrice",
             "stock",
             "categoryId",
             "subcategoryId",
@@ -258,6 +263,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
           name: values.name,
           description: values.description,
           price: values.price,
+          salesPrice: values.salesPrice,
           stock: Number(values.stock) || null,
           categoryId: values.categoryId,
           subcategoryId: values.subcategoryId,
@@ -279,11 +285,12 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
 
         const data = await updateProduct({
           id,
+          salesPrice: values.salesPrice,
           ...validatePayload(payload),
         }).unwrap();
 
         showSuccessSnackbar(data?.message || "Successful");
-        navigate(-2);
+        navigate(-1);
       } catch (error: any) {
         showErrorSnackbar(error?.data?.error || "Error occured");
       }
@@ -309,6 +316,7 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
         name: productData?.name || "",
         description: productData?.description || "",
         price: productData?.price || "",
+        salesPrice: productData?.salesPrice || "",
         stock: 0,
         categoryId: productData?.categoryId || "",
         subcategoryId: productData?.subcategoryId || "",
@@ -492,6 +500,38 @@ const ProductUpdate: FC<ProductUpdateProps> = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.price && Boolean(formik.errors.price)}
             helperText={formik.touched.price && (formik.errors.price as any)}
+            fullWidth
+            margin="normal"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-1">
+          <Typography
+            color="grey.700"
+            component="label"
+            className="font-medium text-sm font-inter capitalize"
+            htmlFor="salesPrice"
+          >
+            <span className="text-[#D92D20] text-sm font-medium font-inter hidden">
+              *
+            </span>
+            Product Sales Price
+          </Typography>
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter product sales price here"
+            name="salesPrice"
+            id="salesPrice"
+            type="number"
+            value={formik.values.salesPrice}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.salesPrice && Boolean(formik.errors.salesPrice)
+            }
+            helperText={
+              formik.touched.salesPrice && (formik.errors.salesPrice as any)
+            }
             fullWidth
             margin="normal"
           />

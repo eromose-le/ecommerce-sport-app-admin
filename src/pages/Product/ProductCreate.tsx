@@ -75,6 +75,7 @@ const validationSchema = Yup.object({
   price: Yup.number()
     .required("Price is required")
     .positive("Price must be positive"),
+  salesPrice: Yup.number().positive("Sales Price must be positive"),
   stock: Yup.number()
     .required("Stock is required")
     .integer("Stock must be an integer"),
@@ -163,6 +164,7 @@ const ProductCreate: FC<ProductCreateProps> = () => {
       name: "",
       description: "",
       price: "",
+      salesPrice: "",
       stock: "",
       categoryId: "",
       subcategoryId: "",
@@ -195,6 +197,7 @@ const ProductCreate: FC<ProductCreateProps> = () => {
           name: values.name,
           description: values.description,
           price: values.price,
+          salesPrice: values.salesPrice,
           stock: Number(values.stock) || null,
           categoryId: values.categoryId,
           subcategoryId: values.subcategoryId,
@@ -374,6 +377,36 @@ const ProductCreate: FC<ProductCreateProps> = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.price && Boolean(formik.errors.price)}
             helperText={formik.touched.price && formik.errors.price}
+            fullWidth
+            margin="normal"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-1">
+          <Typography
+            color="grey.700"
+            component="label"
+            className="font-medium text-sm font-inter capitalize"
+            htmlFor="salesPrice"
+          >
+            <span className="text-[#D92D20] text-sm font-medium font-inter hidden">
+              *
+            </span>
+            Product Sales Price
+          </Typography>
+          <TextField
+            className="MuiTextFieldOutlined--plain capitalize"
+            placeholder="Enter product salesPrice here"
+            name="salesPrice"
+            id="salesPrice"
+            type="number"
+            value={formik.values.salesPrice}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.salesPrice && Boolean(formik.errors.salesPrice)
+            }
+            helperText={formik.touched.salesPrice && formik.errors.salesPrice}
             fullWidth
             margin="normal"
           />

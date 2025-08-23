@@ -19,7 +19,7 @@ import { routeEnum } from "@/constants/RouteConstants";
 import TableText from "@/common/Table/TableText";
 import { ApiProductStoreSlice } from "@/api/ApiProductStoreSlice";
 import { TABLE_ROW_TYPE } from "@/constants/enums";
-import { useQuery } from "@/hooks/useQuery";
+// import { useQuery } from "@/hooks/useQuery";
 import TableSkeletonLoader from "@/common/Table/TableSkeletonLoader";
 import TableEmpty from "@/common/Table/TableEmpty";
 import { User } from "@/types/user";
@@ -29,9 +29,11 @@ import TableError from "@/common/Table/TableError";
 import { exportToCSV } from "@/helpers/exportToCSV";
 import { PAGINATION_DEFAULT } from "@/constants/AppConstants";
 import PopupState, { bindPopover, bindTrigger } from "material-ui-popup-state";
+import { useQueryParam } from "@/hooks/useQueryParam";
 
 const ProductTable = () => {
-  const query = useQuery();
+  // const query = useQuery();
+  const { get } = useQueryParam();
   const { showErrorSnackbar } = useExtendedSnackbar();
   const navigate = useNavigate();
 
@@ -319,8 +321,11 @@ const ProductTable = () => {
   const [pageSize, setPageSize] = useState(PAGINATION_DEFAULT.limit);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
-  const productStatus = query.get("tab") || "";
-  const pageIndexFromUrl = query.get("page") || pageIndex;
+  const productStatus = get("tab") || "";
+  const pageIndexFromUrl = get("page") || pageIndex;
+
+  const pageFromQueryParam = get("page");
+  const limitFromQueryParam = get("limit");
 
   // State for filters
   const [isDeleted, setIsDeleted] = useState<boolean | undefined>(false);
@@ -336,7 +341,10 @@ const ProductTable = () => {
     refetch,
     error,
   } = ApiProductStoreSlice.useGetProductsQuery({
-    pageIndex,
+    // ...(globalFilter && {
+    //   pageIndex: Number(pageIndexFromUrl) || pageIndex,
+    // }),
+    pageIndex: Number(pageIndexFromUrl) || pageIndex,
     pageSize,
     sorting,
     globalFilter,
@@ -380,7 +388,15 @@ const ProductTable = () => {
 
   useEffect(() => {
     fetchData(pageIndex, pageSize, sorting, globalFilter);
-  }, [pageIndex, pageSize, sorting, globalFilter, isDeleted, isRequestDelete,pageIndexFromUrl]);
+  }, [
+    pageIndex,
+    pageSize,
+    sorting,
+    globalFilter,
+    isDeleted,
+    isRequestDelete,
+    pageIndexFromUrl,
+  ]);
 
   if (isError) {
     showErrorSnackbar(error?.message || "Error occured");
@@ -389,6 +405,17 @@ const ProductTable = () => {
   const handleExportCSV = () => {
     exportToCSV(filteredProducts, "table_data");
   };
+
+  console.log({
+    pageFromQueryParam,
+    limitFromQueryParam,
+    productStatus,
+    pageIndexFromUrl,
+    pageIndex,
+    pageSize,
+    pageCount,
+    Pagination,
+  });
 
   return (
     <>
