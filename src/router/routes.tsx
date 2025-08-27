@@ -9,6 +9,7 @@ import {
   PublicRoutesLayout,
 } from "@/pages/Layout/layout/Layout";
 import { routeEnum } from "@/constants/RouteConstants";
+import Review from "@/pages/Review/Review";
 
 const Home = lazy(() => import("@/pages/Home/Home"));
 
@@ -92,6 +93,11 @@ export const ProtectedRoutes: ExtendedRouteObject[] = [
       {
         path: routeEnum.PRODUCT_DETAILS,
         element: <ProductDetail />,
+        errorElement: <ErrorBoundaryRoot />,
+      },
+      {
+        path: routeEnum.REVIEWS,
+        element: <Review />,
         errorElement: <ErrorBoundaryRoot />,
       },
       {

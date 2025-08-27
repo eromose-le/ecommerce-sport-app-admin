@@ -10,6 +10,8 @@ export const routeEnum = {
   PRODUCTS_UPDATE: "/products/:id/update",
   PRODUCT_DETAILS: "/products/:id",
 
+  REVIEWS: "/reviews",
+
   ORDERS: "/orders",
   ORDERS_CREATE: "/orders/create",
   ORDERS_UPDATE: "/orders/:id/update",

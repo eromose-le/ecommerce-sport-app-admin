@@ -15,6 +15,7 @@ import {
   CreditCardShield,
   Home03,
   LogOut01,
+  MessageChatSquare,
   SearchLg,
   Settings01,
   Users01,
@@ -51,6 +52,11 @@ const NORMAL_LINKS: LinkType[] = [
     title: "Products",
     icon: <SearchLg />,
     path: routeEnum.PRODUCTS,
+  },
+  {
+    title: "Reviews",
+    icon: <MessageChatSquare />,
+    path: routeEnum.REVIEWS,
   },
   {
     title: "Orders",

@@ -87,6 +87,17 @@ const TableText: FC<TableTextProps> = ({ type, value }) => {
     );
   }
 
+  if (type === TABLE_ROW_TYPE.REVIEW_DESCRIPTION) {
+    return (
+      <Typography
+        color="grey.900"
+        className="font-inter font-normal max-w-[250px] truncate line-clamp-3 text-wrap text-xs"
+      >
+        {value?.comment}
+      </Typography>
+    );
+  }
+
   if (type === TABLE_ROW_TYPE.PRICE) {
     return (
       <Typography color="grey.900" className="font-inter font-medium text-sm">
@@ -133,6 +144,30 @@ const TableText: FC<TableTextProps> = ({ type, value }) => {
             className="font-crimson font-bold text-md max-w-[200px] capitalize"
           >
             {value?.name}
+          </Typography>
+          <div className="flex items-center space-x-1">
+            <Calendar color="#027A48" width={12} height={12} />
+            <Typography
+              color="grey.600"
+              className="font-inter font-thin text-xs capitalize"
+            >
+              ({transformDate(value?.createdAt)})
+            </Typography>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === TABLE_ROW_TYPE.REVIEW_NAME) {
+    return (
+      <div className="flex items-center gap-2">
+        <div>
+          <Typography
+            color="grey.900"
+            className="font-crimson font-bold text-md max-w-[200px] capitalize"
+          >
+            {`${value?.firstName} ${value?.lastName}`}
           </Typography>
           <div className="flex items-center space-x-1">
             <Calendar color="#027A48" width={12} height={12} />
