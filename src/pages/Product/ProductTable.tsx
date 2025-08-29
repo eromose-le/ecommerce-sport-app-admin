@@ -324,9 +324,6 @@ const ProductTable = () => {
   const productStatus = get("tab") || "";
   const pageIndexFromUrl = get("page") || pageIndex;
 
-  const pageFromQueryParam = get("page");
-  const limitFromQueryParam = get("limit");
-
   // State for filters
   const [isDeleted, setIsDeleted] = useState<boolean | undefined>(false);
   const [isRequestDelete, setIsRequestDelete] = useState<boolean | undefined>(
